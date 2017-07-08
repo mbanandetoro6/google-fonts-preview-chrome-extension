@@ -15,13 +15,13 @@ gulp.task('js:watch', gulp.parallel(browserifyWatch, jsWatch))
 gulp.task('serve', gulp.parallel('scss:watch', 'js:watch', serve))
 gulp.task('clear', clear)
 gulp.task('build', gulp.series('clear', 'scss', 'js', build))
-gulp.task('default', gulp.parallel('scss:watch', 'js:watch'))
+gulp.task('default', 'serve')
 
 function scss () {
   return gulp.src('./source/scss/*.scss')
-        .pipe(plumber())
-        .pipe(gulpScss().on('error', gulpScss.logError))
-        .pipe(gulp.dest('./source/css/'))
+    .pipe(plumber())
+    .pipe(gulpScss().on('error', gulpScss.logError))
+    .pipe(gulp.dest('./source/css/'))
 }
 
 function scssWatch () {
@@ -40,15 +40,15 @@ function build () {
 
 function browserify () {
   return gulp.src('./source/babel/main.js')
-        .pipe(plumber())
-        .pipe(gulpBrowserify({
-          insertGlobals: false,
-          debug: debug
-        }))
-        .pipe(gulpBabel({
-          presets: ['env']
-        }))
-        .pipe(gulp.dest('./source/js/'))
+    .pipe(plumber())
+    .pipe(gulpBrowserify({
+      insertGlobals: false,
+      debug: debug
+    }))
+    .pipe(gulpBabel({
+      presets: ['env']
+    }))
+    .pipe(gulp.dest('./source/js/'))
 }
 
 function browserifyWatch () {
@@ -57,11 +57,11 @@ function browserifyWatch () {
 
 function js () {
   return gulp.src('./source/babel/background.js')
-        .pipe(plumber())
-        .pipe(gulpBabel({
-          presets: ['env']
-        }))
-        .pipe(gulp.dest('./source/js/'))
+    .pipe(plumber())
+    .pipe(gulpBabel({
+      presets: ['env']
+    }))
+    .pipe(gulp.dest('./source/js/'))
 }
 
 function jsWatch () {
