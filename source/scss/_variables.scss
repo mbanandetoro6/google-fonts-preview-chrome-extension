@@ -1,0 +1,17 @@
+@import '_open-color.scss';
+@import '_colors.scss';
+$fontFamily:'Roboto',
+'sans-serif';
+
+$bg-color:darken(#ecf0f1,2);
+$seprator-color:darken(#ecf0f1,8);
+$text-color:darken(#7f8c8d, 20);
+$width:350px;
+$spacing:10px;
+$radius:3px;
+$duration:0.3s;
+
+$primary-color:#3498db;
+$danger-color:$oc-red-6;
+$success-color:#27ae60;
+
