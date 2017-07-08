@@ -1,0 +1,17 @@
+{
+  "name": "google-fonts-preview-chrome-extension",
+  "description": "google chrome extension to Test google web fonts",
+  "main": "index.js",
+  "authors": [
+    "Maulik Anand (mbanandetoro6@gmail.com)"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/mbanandetoro6/google-fonts-preview-chrome-extension",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

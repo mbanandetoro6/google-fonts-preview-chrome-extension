@@ -1,0 +1,22 @@
+{
+  //"$schema": "http://json.schemastore.org/chrome-manifest",
+  "name": "Google Web Fonts Preview",
+  "description": "test google fonts",
+  "version": "1.0",
+  "permissions": [
+    "activeTab"
+  ],
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_title": "test Google Fonts"
+  },
+  "manifest_version": 2,
+  "web_accessible_resources": [
+    "html/overlay.html",
+    "css/main.css",
+    "js/main.js"
+  ]
+}
