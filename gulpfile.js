@@ -15,7 +15,7 @@ gulp.task('js:watch', gulp.parallel(browserifyWatch, jsWatch))
 gulp.task('serve', gulp.parallel('scss:watch', 'js:watch', serve))
 gulp.task('clear', clear)
 gulp.task('build', gulp.series('clear', 'scss', 'js', build))
-gulp.task('default', 'serve')
+gulp.task('default', gulp.task('serve'))
 
 function scss () {
   return gulp.src('./source/scss/*.scss')
