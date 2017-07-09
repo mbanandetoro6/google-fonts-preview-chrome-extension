@@ -1,9 +1,13 @@
 /* global chrome */
 var core = require('./_core.js')
+var WebFont = require('webfontloader')
 
 var activeClass = 'gfp-active'
+var loadingClass = 'gfp-loading'
 var htmlUrl = chrome.runtime.getURL('html/overlay.html')
 var cssUrl = chrome.runtime.getURL('css/main.css')
+var coreFontUrl = 'https://fonts.googleapis.com/css?family=Roboto'
+var fontAwesomeUrl = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
 
 function isInjected () {
   return document.body.classList.contains(activeClass)
@@ -16,23 +20,43 @@ function injectHtml () {
     window.alert('Error Loading Extension, Please Reload Page')
   })
 }
-function injectCss () {
-  var link = document.createElement('link')
-  link.rel = 'stylesheet'
-  link.href = cssUrl
-  link.id = 'gfp-main'
-  document.head.appendChild(link)
+
+function injectCss (url) {
+  return new Promise((resolve, reject) => {
+    var link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = url
+    link.dataset.parent = 'gfp'
+    link.onload = resolve
+    document.head.appendChild(link)
+  })
+}
+function injectMultipleCss (cssUrls) {
+  var promises = []
+  cssUrls.forEach(function (url) {
+    var promise = injectCss(url)
+    promises.push(promise)
+  }, this)
+  return Promise.all(promises)
 }
 
 function init () {
   return new Promise((resolve, reject) => {
     if (isInjected()) {
-      reject(new Error('Extension already loaded, please reload page and try again'))
+      window.alert('Extension already loaded, please reload page and try again')
+      reject(new Error())
+      // reject(new Error('Extension already loaded, please reload page and try again'))
       return
     }
-    document.body.classList.add(activeClass)
+    var bodyClasses = document.body.classList
+    bodyClasses.add(activeClass)
+    bodyClasses.add(loadingClass)
+
     injectHtml()
-    injectCss()
+    injectMultipleCss([cssUrl, coreFontUrl, fontAwesomeUrl]).then(function () {
+      bodyClasses.remove(loadingClass)
+    })
+    resolve()
   })
 }
 
