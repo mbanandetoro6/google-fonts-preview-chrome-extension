@@ -25,8 +25,17 @@ function jsonWebRequest (url) {
     }).catch(reject)
   })
 }
+function randomId () {
+  var id = ''
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+  for (var i = 0; i < 8; i++) { id += possible.charAt(Math.floor(Math.random() * possible.length)) }
+
+  return id
+}
 
 module.exports = {
   webRequest: webRequest,
-  jsonWebRequest: jsonWebRequest
+  jsonWebRequest: jsonWebRequest,
+  getRandomId: randomId
 }
