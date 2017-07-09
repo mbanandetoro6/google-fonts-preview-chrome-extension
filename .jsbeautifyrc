@@ -1,0 +1,12 @@
+{
+    "indent_size": 2,
+    "indent_char": " ",
+    "css": {
+        "indent_size": 4
+    },
+    "space_after_anon_function": true,
+    "end_with_newline": true,
+    "js": {
+
+    }
+}
