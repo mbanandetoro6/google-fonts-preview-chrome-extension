@@ -1,9 +1,14 @@
-var core = require('./_core.js')
 var init = require('./_init.js')
+var font = require('./_fonts.js')
+var dom = require('./_dom.js')
 // var $ = require('cash-dom')
 
 init().then(afterInit)
 
 function afterInit () {
-  console.log('init complete')
+  font.getFonts().then(function (fonts) {
+    dom.appendFonts(fonts)
+  }).catch(function (err) {
+    console.log(err)
+  })
 }
