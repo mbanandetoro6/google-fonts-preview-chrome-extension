@@ -1,5 +1,10 @@
 @import '_variables.scss';
 #google-font-preview-extension {
+    section,div,*{
+        padding: 0;
+        margin:0;
+        background: transparent;
+    }
     &,
     * {
         box-sizing: border-box;
@@ -155,18 +160,47 @@
         padding: 0 $spacing;
         text-align: center;
     }
+    #gfp-font-families {
+        padding: 0;
+        height: 800px;
+        overflow: auto;
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+        &::-webkit-scrollbar-track {
+            background: $seprator-color;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: #666;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: #666;
+        }
+    }
     .gfp-font-family {
+        overflow: hidden;
         background: white;
         height: 40px;
         line-height: 40px;
+        position: relative;
         .gfp-font-family-preview {
-            text-align: center;
+            text-align: left;
+            padding-left: 120px;
             display: block;
             font-size: 1.2em;
         }
         .gfp-font-family-name {
+            width: 110px;
+            overflow: hidden;
             padding-left: $spacing/2;
-            float: left;
+            position: absolute;
+            left: 0;
+            top:0;
+            &:hover{
+                width: auto;
+                background: white;
+                z-index: $z-index+2;
+            }
         }
         .gfp-font-family-action {
             float: right;
