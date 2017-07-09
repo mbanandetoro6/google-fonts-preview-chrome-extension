@@ -12,13 +12,13 @@ $text-color:#757575;
 $dark-text-color:#2C3E50;
 
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700');
 $fontFamily:'Ubuntu Mono', monospace;
 
 // Styling
 $width:350px;
 $spacing:20px;
 $radius:3px;
+$z-index:100000000000;
 
 //Animation
 $duration:0.3s;

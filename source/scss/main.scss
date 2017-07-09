@@ -9,7 +9,7 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    z-index: 100000000000;
+    z-index: $z-index;
     width: $width;
     background: $bg-color;
     color: $text-color;
@@ -23,12 +23,38 @@
         color: $text-color;
         text-decoration: none;
     }
+    #gfp-loader {
+        background-color: white;
+        position: absolute;
+        top: -200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        z-index: $z-index + 100;
+        border-radius: 50%;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, .6);
+        #gfp-loader-inner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid $primary-color;
+            border-radius: 50%;
+            transform: translate(50%, 50%) scale(0);
+            opacity: 1;
+            animation: gfp-loader $duration*5 forwards infinite;
+        }
+        animation: gfp-bounce $duration*5 both infinite;
+        .gfp-loading & {
+            top: 10px;
+        }
+    }
     #gfp-section-settings {
         display: none;
         padding: $spacing;
         background: darken($primary-color, 8);
     }
     #gfp-section-main {
+        position: relative;
         padding: $spacing;
         background: $primary-color;
     }
@@ -165,5 +191,31 @@
     to {
         transform: translateX(0);
         opacity: 1;
+    }
+}
+
+@keyframes gfp-loader {
+    0% {
+        transform: translate(50%, 50%) scale(0);
+    }
+    100% {
+        transform: translate(50%, 50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes gfp-bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateX(-50%) translateY(30px);
+    }
+    40% {
+        transform: translateX(-50%) translateY(0);
+    }
+    60% {
+        transform: translateX(-50%) translateY(15px);
     }
 }
