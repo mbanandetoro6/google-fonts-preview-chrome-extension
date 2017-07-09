@@ -1,6 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
 @import '_variables.scss';
 #google-font-preview-extension {
+    &,
+    * {
+        box-sizing: border-box;
+    }
     font-family: $fontFamily;
     font-size: 14px;
     position: fixed;
@@ -8,116 +11,159 @@
     bottom: 0;
     z-index: 100000000000;
     width: $width;
-    background: $bg-color; // border-right: 1px solid $seprator-color;
+    background: $bg-color;
     color: $text-color;
-    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
-    .clearfix {
+    box-shadow:10px 10px 12px rgba(0, 0, 0, .3);
+    transition: box-shadow $duration;
+    animation: gfp-slide-right $duration forwards;
+    &:hover {
+        box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
+    }
+    a {
+        color: $text-color;
+        text-decoration: none;
+    }
+    #gfp-section-settings {
+        display: none;
+        padding: $spacing;
+        background: darken($primary-color, 8);
+    }
+    #gfp-section-main {
+        padding: $spacing;
+        background: $primary-color;
+    }
+    #gfp-actions {
+        margin-bottom: $spacing/2;
+        a {
+            display: block;
+            padding: 0;
+            background: white;
+            line-height: 40px;
+            height: 40px;
+            border-radius: $radius;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
+            transition: $duration/2 $easeInOutSine;
+            &:hover {
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, .4);
+            }
+            &:active {
+                box-shadow: none;
+            }
+        }
+        #gfp-action-settings,
+        #gfp-action-reset {
+            float: left;
+            color: $dark-text-color;
+        }
+        #gfp-action-settings,
+        #gfp-action-reset,
+        #gfp-action-apply,
+        #gfp-action-italic {
+            width: 40px;
+            text-align: center;
+            font-size: 22px;
+        }
+        #gfp-action-settings {
+            margin-right: 10px;
+        }
+        #gfp-action-reset {
+            color: $accent-color;
+        }
+        #gfp-action-apply {
+            float: right;
+            color: $dark-primary-color;
+        }
+        #gfp-action-italic {
+            float: right;
+            margin-right: $spacing/2;
+            opacity: 0.4;
+            &.active {
+                opacity: 1;
+                color: $dark-primary-color;
+            }
+        }
+        #gfp-font-weight {
+            width: auto;
+            float: right;
+            line-height: 40px;
+            height: 40px;
+            padding: 0 $spacing/2;
+            margin-right: $spacing/2;
+        }
+    }
+    .gfp-clearfix {
         &::after {
             clear: both;
             content: "";
             display: table;
         }
     }
-    &.gfp-on-left {
-        left: 0;
-    }
-    &.gfp-on-right {
-        right: 0;
-    }
-    #gfp-title {
-        padding: $spacing;
-        text-align: center;
-        font-size: 20px;
-        background: darken($bg-color,);
-    }
-    &,
-    * {
-        box-sizing: border-box;
-    }
     .gfp-input {
-        background: white;
+        display: block;
         width: 100%;
-        padding: $spacing;
+        background: white;
+        border-radius: $radius;
+        padding: $spacing/2;
         border: none;
-        vertical-align: middle;
-        transition: box-shadow $duration;
-        border-radius: 0;
-        box-shadow: inset 0 0 2px rgba(0, 0, 0, .4);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        transition: box-shadow $duration $easeInOutBack;
+        font-family: $fontFamily;
+        &:hover,
         &:focus {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
             outline: none;
-            box-shadow: inset 0 0 6px rgba(0, 0, 0, .5);
         }
     }
     #gfp-css-selectors {
         resize: vertical;
         max-height: 200px;
-        border-bottom: 1px solid $seprator-color;
+        height: 80px;
     }
-    #gfp-page-config {
+    #gfp-fonts-search-wrap {
         padding: $spacing;
     }
-    a {
-        color: $text-color;
-        text-decoration: none;
+    #gfp-fonts-search-bar {
+        border-radius: 20px;
+        height: 40px;
+        line-height: 40px;
+        padding: 0 $spacing;
+        text-align: center;
     }
-    .gfp-divider {
-        margin-top: $spacing;
-        margin-bottom: $spacing;
-        background-color: $seprator-color;
-        height: 1px;
-    }
-    #gfp-actions {
-        text-align: right; // margin-bottom: $spacing;
-        >div {
-            float: left;
-            width: 33%;
-            width: 33.33%;
-            padding-right: $spacing;
-            &:last-child {
-                padding-right: 0;
-            }
-        }
-        a {
-            display: block;
-            background-color: $text-color;
-            color: white;
-            padding: $spacing;
-            border-radius: $radius;
-            width: 100%;
+    .gfp-font-family {
+        background: white;
+        height: 40px;
+        line-height: 40px;
+        .gfp-font-family-preview {
             text-align: center;
-            transition-duration: $duration;
-            &:hover {
-                background-color: darken($text-color, 5)
-            }
-            &:active {
-                background-color: darken($text-color, 12);
-            }
-            &#gfp-action-page-reset {
-                background-color: $danger-color;
-                &:hover {
-                    background-color: darken($danger-color, 5);
-                }
-                &:active {
-                    background-color: darken($danger-color, 15);
-                }
-            }
-            &#gfp-action-page-apply {
-                background-color: $primary-color;
-                &:hover {
-                    background-color: darken($primary-color, 5);
-                }
-                &:active {
-                    background-color: darken($primary-color, 15);
-                }
-            }
-            i {
-                display: inline-block;
-                margin-right: $spacing/2;
-            }
+            display: block;
+            font-size: 1.2em;
+        }
+        .gfp-font-family-name {
+            padding-left: $spacing/2;
+            float: left;
+        }
+        .gfp-font-family-action {
+            float: right;
+            display: block;
+            padding: 0;
+            border-left: 1px solid $seprator-color;
+            width: 40px;
+            text-align: center;
+        }
+        border-bottom: 1px solid $seprator-color;
+        &:last-child {
+            border-bottom: none;
         }
     }
-    #gfp-fonts-search {
-        padding: $spacing*1.25 $spacing; // border-bottom: 1px solid $seprator-color;
-        // border-top: 1px solid $seprator-color;
+}
+
+@keyframes gfp-slide-right {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }

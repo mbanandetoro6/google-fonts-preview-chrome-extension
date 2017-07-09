@@ -1,28 +1,52 @@
 <aside id="google-font-preview-extension" class="gfp-on-left">
-    <div id="gfp-title">
-        Google Fonts Preview
-    </div>
-    <textarea id="gfp-css-selectors" placeholder="Comma seprated list of css selectors" class="gfp-input"></textarea>
-    <div id="gfp-page-config">
-        <div id="gfp-actions" class="clearfix">
-            <div>
-                <a href="#" id="gfp-action-page-settings">
-                     &lt; Config 
+    <section id="gfp-section-settings">
+        <input type="checkbox" name="" id=""> Use Random Theme
+    </section>
+    <section id="gfp-section-main">
+        <div id="gfp-actions" class="gfp-clearfix">
+            <a href="#" id="gfp-action-settings" title="Slide Down Settings">
+                <i class="fa fa-cog"></i>
+            </a>
+            <a href="#" id="gfp-action-apply" title="Apply Changes To Page">
+                <i class="fa fa-flask"></i>
+            </a>
+
+            <select id="gfp-font-weight" class="gfp-input" title="Select Font Weight To Be Applied">
+                <option value="100" selected disabled>Weight</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="300">300</option>
+                <option value="400">400</option>
+                <option value="500">500</option>
+                <option value="600">600</option>
+                <option value="700">700</option>
+                <option value="800">800</option>
+                <option value="900">900</option>
+            </select>
+            <a href="#" id="gfp-action-italic" title="Italic/Normal Click To Toggle">
+                <i class="fa fa-italic"></i>
+            </a>
+            <a href="#" id="gfp-action-reset" title="Reset Fonts For Page">
+                <i class="fa fa-history"></i>
+            </a>
+
+        </div>
+        <textarea id="gfp-css-selectors" title="Css selectors comma seprated , just like regular css" placeholder="Css selectors comma seprated"
+            class="gfp-input"></textarea>
+    </section>
+    <section id="gfp-section-fonts">
+        <div id="gfp-fonts-search-wrap">
+            <input type="text" class="gfp-input" title="Fonts Search" placeholder="Type To Filter Fonts" id="gfp-fonts-search-bar">
+        </div>
+        <div id="gfp-font-families">
+            <div class="gfp-font-family gfp-clearfix" data-index="5">
+                <span class="gfp-font-family-name">Roboto</span>
+                <a class="gfp-font-family-action">
+                    <i class="fa fa-angle-down"></i>
                 </a>
-            </div>
-            <div>
-                <a href="#" id="gfp-action-page-reset">
-                     Reset 
-                </a>
-            </div>
-            <div>
-                <a href="#" id="gfp-action-page-apply">
-                     Apply /&gt; 
-                </a>
+                <span class="gfp-font-family-preview">Roboto</span>
             </div>
         </div>
-
-    </div>
-    <input type="text" class="gfp-input" placeholder="Search Fonts" id="gfp-fonts-search">
+    </section>
     <div id="gfp-font-families"></div>
 </aside>
