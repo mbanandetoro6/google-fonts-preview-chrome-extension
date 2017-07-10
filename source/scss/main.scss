@@ -185,9 +185,12 @@
         position: relative;
         .gfp-font-family-preview {
             text-align: left;
-            padding-left: 120px;
+            margin-left: 120px;
+            margin-right: 40px;
             display: block;
             font-size: 1.2em;
+            overflow: hidden;
+            height: 40px;
         }
         .gfp-font-family-name {
             width: 110px;
