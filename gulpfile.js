@@ -45,9 +45,9 @@ function browserify () {
       insertGlobals: false,
       debug: debug
     }))
-    .pipe(gulpBabel({
-      presets: ['env']
-    }))
+    // .pipe(gulpBabel({
+    //   presets: ['env']
+    // }))
     .pipe(gulp.dest('./source/js/'))
 }
 
@@ -58,9 +58,9 @@ function browserifyWatch () {
 function js () {
   return gulp.src('./source/babel/background.js')
     .pipe(plumber())
-    .pipe(gulpBabel({
-      presets: ['env']
-    }))
+    // .pipe(gulpBabel({
+    //   presets: ['env']
+    // }))
     .pipe(gulp.dest('./source/js/'))
 }
 
