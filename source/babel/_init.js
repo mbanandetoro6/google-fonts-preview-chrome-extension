@@ -63,8 +63,8 @@ function init () {
     loadFontsAndFontIcons().then(function () {
       console.log('Wohoo! Extention Loaded')
       bodyClasses.remove(loadingClass)
+      resolve()
     })
-    resolve()
   })
 }
 

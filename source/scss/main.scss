@@ -1,8 +1,10 @@
 @import '_variables.scss';
 #google-font-preview-extension {
-    section,div,*{
+    section,
+    div,
+    * {
         padding: 0;
-        margin:0;
+        margin: 0;
         background: transparent;
     }
     &,
@@ -69,7 +71,6 @@
             display: block;
             padding: 0;
             background: white;
-            line-height: 40px;
             height: 40px;
             border-radius: $radius;
             box-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
@@ -79,6 +80,10 @@
             }
             &:active {
                 box-shadow: none;
+            }
+            &,
+            i {
+                line-height: 40px!important;
             }
         }
         #gfp-action-settings,
@@ -146,8 +151,9 @@
         }
     }
     #gfp-css-selectors {
-        resize: vertical;
-        max-height: 200px;
+        resize: vertical!important;
+        max-height: 200px!important;
+        min-height: 40px!important;
         height: 80px;
     }
     #gfp-fonts-search-wrap {
@@ -183,6 +189,7 @@
         height: 40px;
         line-height: 40px;
         position: relative;
+       
         .gfp-font-family-preview {
             text-align: left;
             margin-left: 120px;
@@ -192,14 +199,19 @@
             overflow: hidden;
             height: 40px;
         }
+         &.gfp-font-family-loading-error{
+            .gfp-font-family-preview{
+                color: $error-color;
+            }
+        }
         .gfp-font-family-name {
             width: 110px;
             overflow: hidden;
             padding-left: $spacing/2;
             position: absolute;
             left: 0;
-            top:0;
-            &:hover{
+            top: 0;
+            &:hover {
                 width: auto;
                 background: white;
                 z-index: $z-index+2;

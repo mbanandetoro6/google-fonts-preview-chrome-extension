@@ -11,14 +11,33 @@ function appendFonts (fonts) {
 }
 
 function appendFont (fontFamily, container, link) {
-  var html = `<div class="gfp-font-family gfp-clearfix" data-index="5" data-url="${fontFamily.url}" data-load="${fontFamily.family}:&text=${fontFamily.family}">
+  var name = fontFamily.family.replace(/\s+/g, '')
+  var html = `<div id="${fontFamily.id}" class="gfp-font-family gfp-font-family-loading gfp-clearfix" data-index="5" data-load="${fontFamily.load}" >
                     <span class="gfp-font-family-name">${fontFamily.family}</span>
                     <a class="gfp-font-family-action">
                         <i class="fa fa-angle-down"></i>
                     </a>
-                    <span data-style="font-family:'${fontFamily.family}','Ubuntu Mono'"  class="gfp-font-family-preview">${fontFamily.family}</span>
+                    <span data-style="font-family:'${fontFamily.family}','Ubuntu Mono'" data-text="${fontFamily.family}" class="gfp-font-family-preview">
+                    Loading...
+                    </span>
               </div>`
   container.append(html)
+}
+
+function onPreviewFontLoaded (fontFamily) {
+  var fontFamilyEl = $('#' + fontFamily.id)
+  fontFamilyEl.removeClass('gfp-font-family-loading gfp-font-family-loading-error')
+  var previewEl = fontFamilyEl.find('.gfp-font-family-preview')
+  previewEl.attr('style', previewEl.data('style'))
+  previewEl.text(previewEl.data('text'))
+}
+
+function onPreviewFontLoadError (fontFamily) {
+  console.log('err on  - ' + fontFamily.id)
+  var fontFamilyEl = $('#' + fontFamily.id)
+  fontFamilyEl.addClass('gfp-font-family-loading-error')
+  var previewEl = fontFamilyEl.find('.gfp-font-family-preview')
+  previewEl.text('<Error Loading/>').attr('title', 'click to try reloading')
 }
 
 function loadPreviewOnHover () {
@@ -44,5 +63,7 @@ function setHeight () {
 module.exports = {
   appendFonts: appendFonts,
   setHeight: setHeight,
-  loadPreviewOnHover: loadPreviewOnHover
+  loadPreviewOnHover: loadPreviewOnHover,
+  onPreviewFontLoaded: onPreviewFontLoaded,
+  onPreviewFontLoadError: onPreviewFontLoadError
 }

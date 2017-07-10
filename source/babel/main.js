@@ -15,5 +15,5 @@ function afterInit () {
 }
 
 function bindEvents () {
-  dom.loadPreviewOnHover()
+ // dom.loadPreviewOnHover()
 }
