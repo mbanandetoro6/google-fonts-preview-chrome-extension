@@ -2,7 +2,7 @@ var WebFont = require('webfontloader')
 var core = require('./_core.js')
 
 var apiUrl = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&fields=items(category%2Cfamily%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E'
-apiUrl = 'http://www.localcdn.com/temp/google-fonts.json' // temp for local testing
+apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing
 var fontUrlBase = 'https://fonts.googleapis.com/css?family='
 
 var fonts = []

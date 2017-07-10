@@ -8,7 +8,12 @@ init().then(afterInit)
 function afterInit () {
   font.getFonts().then(function (fonts) {
     dom.appendFonts(fonts)
+    bindEvents()
   }).catch(function (err) {
     console.log(err)
   })
+}
+
+function bindEvents () {
+  dom.loadPreviewOnHover()
 }
