@@ -1,18 +1,18 @@
 var WebFont = require('webfontloader')
-var core = require('./_core.js')
-var dom = require('./_dom.js')
+var core = require('./core.js')
+var dom = require('./dom.js')
 var lodash = require('lodash')
 
-var apiUrl = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&fields=items(category%2Cfamily%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E'
-apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing
-// apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // temp for local testing
 // var fontUrlBase = 'https://fonts.googleapis.com/css?family='
-
+// const apiUrl = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&fields=items(category%2Cfamily%2ClastModified%2Csubsets%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E'
+// const apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing
+const apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // temp for local testing
 var fonts = []
 
 function loadGoogleFontFamily (fontFamily, isQuickPreview) {
   return new Promise((resolve, reject) => {
-    var name = fontFamily.family
+    // resolve(fontFamily)
+    var name
     if (isQuickPreview) {
       name = fontFamily.quickLoad
     } else {
@@ -41,11 +41,11 @@ function loadGoogleFontFamilies (fontFamilyArray, onEachLoad, onEachFail) {
         promises.push(loadGoogleFontFamily(fontFamily, true).then(onEachLoad).catch(onEachFail))
       })
       Promise.all(promises).then(resolve).catch(reject)
-    }, 300)
+    }, 1000)
   })
 }
 
-function loadGoogleFontsListViaApi () {
+function loadFontsFromApi () {
   return new Promise((resolve, reject) => {
     core.jsonWebRequest(apiUrl).then(function (data) {
       resolve(data)
@@ -59,55 +59,29 @@ function getFonts () {
       resolve(fonts)
       return
     }
-    loadGoogleFontsListViaApi().then(function (data) {
-      fonts = data.items
-      fonts.map(function (font) {
-        var variants = font.variants.join(',')
-        font.load = font.family + ':' + variants
-        font.id = 'font-' + core.getRandomId()
-        font.quickLoad = font.family + ':&text=' + font.family.replace(/\s+/g, '')
+    loadFontsFromApi().then((data) => {
+      var supportedFonts = lodash.filter(data.items, function (font) {
+        return font.subsets.includes('latin')
       })
+      var counter = 0
+      supportedFonts.map(function (font) {
+        font.id = 'font-' + counter
+        var variants = font.variants.join(',')
+        font.loadRef = font.family + ':' + variants
+        counter++
+        var supportedVariant = font.variants.includes('regular') ? '400' : font.variants[0]
+        font.quickLoadRef = font.family + ':' + supportedVariant + '&text=' + encodeURIComponent(font.family)
+      })
+      fonts = supportedFonts
       resolve(fonts)
       injectForPreview()
     }).catch(reject)
   })
 }
 
-// function injectForPreview () {
-//   fonts.reduce((lastPromise, fontFamily) => {
-//     var id = fontFamily.id
-//     var name = fontFamily.family
-//     var data = name + ':&text=' + name.replace(/\s+/g, '')
-
-//     if (lastPromise === null) {
-//       return loadGoogleFont(data, id).then((rId) => {
-//         dom.onPreviewFontLoaded(rId)
-//       }, (rId) => {
-//         dom.onPreviewFontLoadError(rId)
-//       })
-//     } else {
-//       return lastPromise.then(() => {
-//         return loadGoogleFont(data, id).then((rId) => {
-//           dom.onPreviewFontLoaded(rId)
-//         }, (rId) => {
-//           dom.onPreviewFontLoadError(rId)
-//         })
-//       }, () => {
-//         console.log('error loading font')
-//         // dom.onPreviewFontLoadError(returnId)
-//         return loadGoogleFont(data, id).then((rId) => {
-//           dom.onPreviewFontLoaded(rId)
-//         }, (rId) => {
-//           dom.onPreviewFontLoadError(rId)
-//         })
-//       })
-//     }
-//   }, null)
-// }
-
 function injectForPreview () {
-  var fontsChunks = lodash.chunk(fonts, 10)
-  console.log(fontsChunks)
+  var fontsChunks = lodash.chunk(fonts, 1)
+
   fontsChunks.reduce((lastPromise, fontChunk) => {
     if (lastPromise === null) {
       return loadGoogleFontFamilies(fontChunk, onFontLoadSuccess, onFontLoadFail)
@@ -123,11 +97,11 @@ function injectForPreview () {
 // }
 
 function onFontLoadSuccess (fontFamily) {
-  console.log(fontFamily.family, 'is loaded')
   dom.onPreviewFontLoaded(fontFamily)
 }
 
 function onFontLoadFail (fontFamily) {
+  console.log(fontFamily.family, 'is failed')
   dom.onPreviewFontLoadError(fontFamily)
 }
 module.exports = {
