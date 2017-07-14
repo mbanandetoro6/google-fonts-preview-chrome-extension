@@ -10,8 +10,8 @@ var liveServer = require('live-server')
 
 gulp.task('scss', scss)
 gulp.task('scss:watch', scssWatch)
-gulp.task('js', gulp.parallel(browserify, js))
-gulp.task('js:watch', gulp.parallel(browserifyWatch, jsWatch))
+gulp.task('js', js)
+gulp.task('js:watch', jsWatch)
 gulp.task('serve', gulp.parallel('scss:watch', 'js:watch', serve))
 gulp.task('clear', clear)
 gulp.task('build', gulp.series('clear', 'scss', 'js', build))
@@ -38,8 +38,8 @@ function build () {
   }).pipe(gulp.dest('./dist/'))
 }
 
-function browserify () {
-  return gulp.src('./source/babel/main.js')
+function js () {
+  return gulp.src('./source/babel/*.js')
     .pipe(plumber())
     .pipe(gulpBrowserify({
       insertGlobals: false,
@@ -51,21 +51,8 @@ function browserify () {
     .pipe(gulp.dest('./source/js/'))
 }
 
-function browserifyWatch () {
-  return gulp.watch(['./source/babel/**/*.js', '!**/background.js'], browserify)
-}
-
-function js () {
-  return gulp.src('./source/babel/background.js')
-    .pipe(plumber())
-    // .pipe(gulpBabel({
-    //   presets: ['env']
-    // }))
-    .pipe(gulp.dest('./source/js/'))
-}
-
 function jsWatch () {
-  return gulp.watch('./source/babel/background.js', js)
+  return gulp.watch('./source/babel/**/*.js', js)
 }
 
 function serve () {
