@@ -4,7 +4,8 @@
   "description": "test google fonts",
   "version": "1.0",
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "background": {
     "scripts": ["js/background.js"],
