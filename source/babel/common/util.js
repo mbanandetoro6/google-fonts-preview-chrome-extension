@@ -1,4 +1,4 @@
-// var jQuery = require('jquery') // require jquery for using http module
+var jQuery = require('jquery') // require jquery for using http module
 
 function webRequest (url) { // web request to get data from urls
   return new Promise((resolve, reject) => { // wrap into es6 promise

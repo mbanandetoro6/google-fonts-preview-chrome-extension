@@ -1,4 +1,8 @@
 @import '_variables.scss';
+body {
+    margin: 0;
+}
+
 #google-font-preview-extension {
     section,
     div,
@@ -23,12 +27,16 @@
     box-shadow:10px 10px 12px rgba(0, 0, 0, .3);
     transition: box-shadow $duration;
     animation: gfp-slide-right $duration forwards;
+    overflow: hidden;
     &:hover {
         box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
     }
     a {
         color: $text-color;
         text-decoration: none;
+    }
+    .fa {
+        line-height: 40px!important;
     }
     #gfp-loader {
         background-color: white;
@@ -46,7 +54,7 @@
             width: 25px;
             height: 25px;
             border: 2px solid $primary-color;
-            border-color: transparent $primary-color  $primary-color  $primary-color  ;
+            border-color: transparent $primary-color $primary-color $primary-color;
             border-radius: 50%;
             opacity: 1;
             animation: gfp-loader $duration*7 $easeInOutBack 0s infinite normal forwards;
@@ -188,7 +196,7 @@
         overflow: hidden;
         background: white;
         height: 40px;
-        line-height: 40px;
+        line-height: 40px!important;
         position: relative;
         .gfp-font-family-preview {
             margin-right: 40px;
@@ -196,6 +204,12 @@
             padding-left: $spacing/2;
             font-size: 1.2em;
             height: 40px;
+            overflow: hidden;
+            img{
+                image-rendering: -webkit-optimize-contrast;
+                max-width:660px;
+                width: 330px;
+            }
         }
         &.gfp-font-family-loading-error {
             .gfp-font-family-preview {
@@ -218,25 +232,14 @@
         &:last-child {
             border-bottom: none;
         }
-        // &.gfp-font-family-loading:before {
-        //     $color: $primary-color;
-        //     content: "";
-        //     position: absolute;
-        //     border: 1px solid transparent;
-        //     border-color: $color $color $color transparent;
-        //     border-radius: 50%;
-        //     box-sizing: border-box;
-        //     animation-name: gfp-loader;
-        //     animation-duration: 1s;
-        //     animation-timing-function: $easeInOutBack;
-        //     animation-fill-mode: forwards;
-        //     animation-iteration-count: infinite;
-        //     height: 20px;
-        //     width: 20px;
-        //     top: 10px;
-        //     right: 50px;
-        //     animation-direction: reverse;
-        // }
+    }
+    #gfp-cache-notice {
+        padding: $spacing;
+        padding-top: 0;
+        text-align: center;
+        a {
+            text-decoration: underline
+        }
     }
 }
 
@@ -263,7 +266,7 @@
         transform: translateY(0);
     }
     60% {
-        transform: translateY(15px) 
+        transform: translateY(15px)
     }
 }
 
