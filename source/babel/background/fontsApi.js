@@ -1,6 +1,6 @@
 /* //eslint-disable */
 // import modules
-const lodash = require('lodash')
+const filter = require('lodash/filter.js')
 const WebFontLoader = require('webfontloader')
 const jQuery = require('jquery')
 // local imports
@@ -31,7 +31,7 @@ var getFonts = () => {
 }
 
 var buildFonts = (rawFontsList) => {
-  var filteredFonts = lodash.filter(rawFontsList, (font) => {
+  var filteredFonts = filter(rawFontsList, (font) => {
     return font.subsets.includes('latin')
   })
 
