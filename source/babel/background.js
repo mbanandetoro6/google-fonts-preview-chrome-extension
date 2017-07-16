@@ -1,6 +1,6 @@
 /// <reference path="./../../exclude/chrome-dev-intelligence.d.ts"/>
 /* global chrome */
-const FontsApi = require('./background/fonts_cache.js')
+const FontsApi = require('./background/fonts.js')
 
 /*
 1. user click on browser action @done
