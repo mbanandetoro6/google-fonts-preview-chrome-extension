@@ -1,5 +1,4 @@
 var allFonts = []
-var fontsForSearch = []
 
 function getFonts () {
   return allFonts
@@ -7,20 +6,6 @@ function getFonts () {
 
 function storeFonts (fonts) {
   allFonts = fonts
-  updateFontNames()
-}
-
-function updateFontNames () {
-  fontsForSearch = []
-  allFonts.forEach((font) => {
-    fontsForSearch.push({
-      id: font.id,
-      family: font.family
-    })
-  })
-}
-function getFontsForSearch () {
-  return fontsForSearch
 }
 
 function mergePreview (font) {
@@ -37,13 +22,11 @@ function mergePreviews (fonts) {
   fonts.forEach(function (font) {
     mergePreview(font)
   }, this)
-  updateFontNames()
 }
 
 module.exports = {
   getFonts: getFonts,
   storeFonts: storeFonts,
-  mergePreviews: mergePreviews,
-  getFontsForSearch: getFontsForSearch
+  mergePreviews: mergePreviews
 
 }

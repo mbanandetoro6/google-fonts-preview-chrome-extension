@@ -179,6 +179,7 @@ body {
         padding: 0;
         height: 800px;
         overflow: auto;
+        position: relative;
         &::-webkit-scrollbar {
             width: 10px;
         }
@@ -197,7 +198,16 @@ body {
         background: white;
         height: 40px;
         line-height: 40px!important;
-        position: relative;
+        position: absolute;
+        left: 0;
+        right: 0;
+        transition: opacity $duration;
+        opacity: 0;
+        visibility: hidden;
+        &.gfp-font-visible {
+            opacity: 1;
+            visibility: visible;
+        }
         .gfp-font-family-preview {
             margin-right: 40px;
             display: block;
@@ -205,9 +215,9 @@ body {
             font-size: 1.2em;
             height: 40px;
             overflow: hidden;
-            img{
+            img {
                 image-rendering: -webkit-optimize-contrast;
-                max-width:660px;
+                max-width: 660px;
                 width: 330px;
             }
         }

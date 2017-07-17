@@ -9,8 +9,8 @@ const storage = require('./../common/storage.js')
 
 const fontUrlBase = 'https://fonts.googleapis.com/css?family='
 // const apiUrl = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&fields=items(category%2Cfamily%2ClastModified%2Csubsets%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E'
-const apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing
-// const apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // temp for local testing
+// const apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing
+const apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // temp for local testing
 var fonts = []
 
 var getFonts = () => {

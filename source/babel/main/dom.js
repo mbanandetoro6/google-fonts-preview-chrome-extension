@@ -4,21 +4,37 @@ var FontsStore = require('./fontsStore.js')
 const debounce = require('lodash/debounce.js')
 
 var containerId = '#gfp-font-families'
+var fuseOptions = {
+  shouldSort: true,
+  threshold: 0.6,
+  location: 0,
+  distance: 100,
+  maxPatternLength: 16,
+  minMatchCharLength: 1,
+  keys: [
+    'family'
+  ]
+}
 
 function appendFonts (fonts) {
   // console.time('appendFonts')
   var container = jQuery(containerId)
   jQuery('#gfp-fonts-count').text(fonts.length)
   clearFonts()
-  fonts.forEach(function (fontFamily) {
-    appendFont(fontFamily, container)
-  }, this)
+
+  for (var i = 0; i < fonts.length; i++) {
+    var fontFamily = fonts[i]
+    appendFont(fontFamily, container, i)
+  }
+  setFontContainerHeight()
+
   // console.timeEnd('appendFonts')
 }
 
-function appendFont (fontFamily, container) {
+function appendFont (fontFamily, container, index) {
+  var top = index * 40
   var preview = fontFamily.base64Url ? `<img src="${fontFamily.base64Url}" />` : fontFamily.family
-  var html = `<div id="${fontFamily.id}" class="gfp-font-family gfp-font-family-loading gfp-clearfix" data-index="5" data-url="${fontFamily.url}" >
+  var html = `<div id="${fontFamily.id}" style="top:${top}px" class="gfp-font-family gfp-font-visible gfp-font-family-loading gfp-clearfix" data-index="5" data-url="${fontFamily.url}" >
                     <span class="gfp-font-family-preview">
                       ${preview}
                     </span>
@@ -30,18 +46,22 @@ function appendFont (fontFamily, container) {
 }
 
 function filterFonts (fonts) {
-  var ids = []
-  fonts.forEach(function (font) {
-    ids.push('#' + font.id)
-  }, this)
   var container = jQuery(containerId)
-  container.find('>div').hide().filter(ids.join(',')).show()
+  var allFonts = container.find('>div')
+  allFonts.removeClass('gfp-font-visible').css('top', 0)
+  for (var i = 0; i < fonts.length; i++) {
+    var font = fonts[i]
+    jQuery('#' + font.id).css('top', i * 40).addClass('gfp-font-visible')
+  }
   // fonts.not(ids.join(',')).hide()
 }
 
 function resetFontSearch () {
   var container = jQuery(containerId)
-  container.find('>div').show()
+  var allFonts = container.find('>div')
+  allFonts.each((index, element) => {
+    jQuery(element).css('top', (index * 40) + 'px').addClass('gfp-font-visible')
+  })
 }
 
 function injectFontPreview (font) {
@@ -59,39 +79,43 @@ function updateCacheStatus (text) {
 }
 
 function hideProgress () {
-  jQuery('#gfp-cache-notice').slideUp()
+  jQuery('#gfp-cache-notice').slideUp(400, 'swing', () => {
+    setFontContainerHeight()
+  })
 }
 
 function bindSearchEvent () {
-  var options = {
-    shouldSort: false,
-    threshold: 0.6,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32,
-    minMatchCharLength: 1,
-    keys: [
-      'family'
-    ]
-  }
+  jQuery('#gfp-fonts-search-bar').keyup(debounce(performSearch, 50))
+}
 
-  var searchInput = jQuery('#gfp-fonts-search-bar')
-  searchInput.keyup(debounce(performSearch, 200))
-
-  function performSearch () {
-    var searchTerm = searchInput.val().trim()
-    if (searchTerm === '') {
-      resetFontSearch()
-    } else {
-      console.time('search')
-      var fuse = new Fuse(FontsStore.getFontsForSearch(), options)
-      var fontSearchResult = fuse.search(searchTerm)
-      console.timeEnd('search')
-      console.time('filter')
-      filterFonts(fontSearchResult)
-      console.timeEnd('filter')
-    }
+function performSearch (e) {
+  console.log(e)
+  console.log('hi')
+  var searchTerm = document.getElementById('gfp-fonts-search-bar').value.trim()
+  if (searchTerm === '') {
+    resetFontSearch()
+  } else {
+    console.time('search')
+    var fuse = new Fuse(FontsStore.getFonts(), fuseOptions)
+    var fontSearchResult = fuse.search(searchTerm)
+    console.timeEnd('search')
+    console.time('filter')
+    filterFonts(fontSearchResult)
+    console.timeEnd('filter')
   }
+}
+
+function setFontContainerHeight () {
+  var offset
+  offset = jQuery('#gfp-section-settings').height()
+  offset = jQuery('#gfp-section-main').height()
+  offset = jQuery('#gfp-fonts-search-wrap').height()
+  offset = jQuery('#gfp-cache-notice').height()
+
+  var totalHeight = jQuery('#google-font-preview-extension').height()
+
+  var height = totalHeight - offset
+  jQuery(containerId).height(height)
 }
 
 // function onPreviewFontLoaded (fontFamily) {
