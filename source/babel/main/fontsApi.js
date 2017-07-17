@@ -1,19 +1,16 @@
 /* global chrome */
 var Dom = require('./dom.js')
-
-var allFonts = []
+var FontsStore = require('./fontsStore.js')
 
 var loadFonts = () => {
   getFonts().then((fonts) => {
-    allFonts = fonts
+    FontsStore.storeFonts(fonts)
     Dom.appendFonts(fonts)
     Dom.bindSearchEvent()
-    console.log(fonts)
     loadPreview()
+  }, (error) => {
+    window.alert(error.message)
   })
-  //   .catch((error) => {
-  //   window.alert(error.message)
-  // })
 }
 
 var getFonts = () => {
@@ -21,7 +18,6 @@ var getFonts = () => {
     chrome.runtime.sendMessage({
       request: 'fonts'
     }, function (response) {
-      console.log(response)
       if (response.status && response.status === 'success') {
         resolve(response.fonts)
       } else if (response.status && response.status === 'error') {
@@ -53,6 +49,7 @@ var loadPreview = () => {
 
 var onSuccess = (response) => {
   Dom.injectFontPreview(response.font)
+  FontsStore.mergePreviews([response.font])
   Dom.updateCacheStatus(response.progress)
 }
 
@@ -60,17 +57,6 @@ var onError = (response) => {
   Dom.updateCacheStatus(response.progress)
 }
 
-var getAllFonts = function () {
-  console.log('all fonts')
-  console.table(allFonts)
-  return allFonts
-}
-
-// function helloWorld () {
-//   return 'helloWorld'
-// }
-
 module.exports = {
-  loadFonts: loadFonts,
-  getAllFonts: getAllFonts
+  loadFonts: loadFonts
 }

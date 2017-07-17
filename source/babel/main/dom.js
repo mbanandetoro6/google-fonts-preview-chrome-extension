@@ -1,18 +1,19 @@
 var jQuery = require('jquery')
 var Fuse = require('fuse.js')
-var Fonts = require('./fonts.js')
+var FontsStore = require('./fontsStore.js')
 const debounce = require('lodash/debounce.js')
 
 var containerId = '#gfp-font-families'
 
-console.log(Fonts)
 function appendFonts (fonts) {
+  // console.time('appendFonts')
   var container = jQuery(containerId)
   jQuery('#gfp-fonts-count').text(fonts.length)
   clearFonts()
   fonts.forEach(function (fontFamily) {
     appendFont(fontFamily, container)
   }, this)
+  // console.timeEnd('appendFonts')
 }
 
 function appendFont (fontFamily, container) {
@@ -26,6 +27,21 @@ function appendFont (fontFamily, container) {
                     </a>
               </div>`
   container.append(html)
+}
+
+function filterFonts (fonts) {
+  var ids = []
+  fonts.forEach(function (font) {
+    ids.push('#' + font.id)
+  }, this)
+  var container = jQuery(containerId)
+  container.find('>div').hide().filter(ids.join(',')).show()
+  // fonts.not(ids.join(',')).hide()
+}
+
+function resetFontSearch () {
+  var container = jQuery(containerId)
+  container.find('>div').show()
 }
 
 function injectFontPreview (font) {
@@ -47,11 +63,8 @@ function hideProgress () {
 }
 
 function bindSearchEvent () {
-  console.log(typeof (Fonts))
-  console.log(Fonts)
-  var allFonts = Fonts.helloWorld()
   var options = {
-    shouldSort: true,
+    shouldSort: false,
     threshold: 0.6,
     location: 0,
     distance: 100,
@@ -61,19 +74,22 @@ function bindSearchEvent () {
       'family'
     ]
   }
-  var fuse = new Fuse(allFonts, options)
+
   var searchInput = jQuery('#gfp-fonts-search-bar')
-  searchInput.keyup(debounce(performSearch, 250))
+  searchInput.keyup(debounce(performSearch, 200))
 
   function performSearch () {
     var searchTerm = searchInput.val().trim()
     if (searchTerm === '') {
-      clearFonts()
-      appendFonts(allFonts)
+      resetFontSearch()
     } else {
+      console.time('search')
+      var fuse = new Fuse(FontsStore.getFontsForSearch(), options)
       var fontSearchResult = fuse.search(searchTerm)
-      clearFonts()
-      appendFonts(fontSearchResult)
+      console.timeEnd('search')
+      console.time('filter')
+      filterFonts(fontSearchResult)
+      console.timeEnd('filter')
     }
   }
 }
