@@ -1,6 +1,6 @@
 /// <reference path="./../../exclude/chrome-dev-intelligence.d.ts"/>
 /* global chrome */
-const FontsApi = require('./background/fontsApi.js')
+const FontsApi = require('./background/fonts_background.js')
 
 // Called when the user clicks on the browser action.
 chrome.browserAction.onClicked.addListener(function (tab) {
@@ -38,10 +38,11 @@ chrome.runtime.onConnect.addListener((port) => {
   if (port.name === 'fontPreview') {
     port.onMessage.addListener((message, port) => {
       if (message.request && message.request === 'fontPreview') {
-        renderFonts((response) => {
+        getFontsPreview((response) => {
           port.postMessage(response)
-          if (response.status === 'end') {
+          if (response.progress.isCompleted) {
             port.disconnect()
+            console.log('port disconnect')
           }
         })
       }
@@ -51,37 +52,16 @@ chrome.runtime.onConnect.addListener((port) => {
   }
 })
 
-function renderFonts (response) {
+function getFontsPreview (response) {
   FontsApi.getFonts().then((fonts) => {
-    var totalFonts = fonts.length
-    var successFonts = 0
-    var errorFonts = 0
-    var progress = () => {
-      return `${successFonts + errorFonts} processed out of ${totalFonts}`
-    }
-    var isCompleted = () => {
-      return totalFonts === successFonts + errorFonts
-    }
-    FontsApi.getFontsPreviewImages(fonts, (font) => {
-      successFonts++
-      // on success
+    var onprogress = (font, isSuccess, currentProgress) => {
       var msg = {
-        status: 'success',
+        status: isSuccess ? 'success' : 'error',
         font: font,
-        progress: progress(),
-        isCompleted: isCompleted()
+        progress: currentProgress
       }
       response(msg)
-    }, (font) => {
-      errorFonts++
-      // on error
-      var msg = {
-        status: 'error',
-        font: font,
-        progress: progress(),
-        isCompleted: isCompleted()
-      }
-      response(msg)
-    })
+    }
+    FontsApi.getFontsPreviewImages(fonts, onprogress)
   })
 }

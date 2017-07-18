@@ -66,8 +66,13 @@ body {
     }
     #gfp-section-settings {
         display: none;
-        padding: $spacing;
+        height: 0;
         background: darken($primary-color, 8);
+        &.gfp-settings-active {
+            height: auto;
+            padding: $spacing;
+            display: block;
+        }
     }
     #gfp-section-main {
         position: relative;
@@ -250,6 +255,20 @@ body {
         a {
             text-decoration: underline
         }
+    }
+    #gfp-font-progress-success,
+    #gfp-font-progress-error {
+        display: inline-block;
+        padding: 5px;
+        border-radius: $radius;
+    }
+    #gfp-font-progress-success {
+        background-color: $success-color;
+        color: white;
+    }
+    #gfp-font-progress-error {
+        background-color: $error-color;
+        color: white;
     }
 }
 

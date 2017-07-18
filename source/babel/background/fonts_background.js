@@ -1,4 +1,3 @@
-/* //eslint-disable */
 // import modules
 const filter = require('lodash/filter.js')
 const WebFontLoader = require('webfontloader')
@@ -9,8 +8,8 @@ const storage = require('./../common/storage.js')
 
 const fontUrlBase = 'https://fonts.googleapis.com/css?family='
 // const apiUrl = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&fields=items(category%2Cfamily%2ClastModified%2Csubsets%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E'
-// const apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing
-const apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // temp for local testing
+const apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing
+// const apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // temp for local testing
 var fonts = []
 
 var getFonts = () => {
@@ -66,7 +65,7 @@ var loadFontFamilyForPreview = (font) => {
   })
 }
 
-var getFontsPreview = (fontsToProcess, successCallback, errorCallback) => {
+var getFontsPreview = (fontsToProcess, onProgressCallback, onCompleteCallback) => {
   var scale = 2
   var settings = {
     fontSize: 18 * scale,
@@ -77,30 +76,33 @@ var getFontsPreview = (fontsToProcess, successCallback, errorCallback) => {
   var lastFont = fontsToProcess
   console.log(lastFont)
 
-  fontsToProcess.reduce((lastPromise, currentFont) => {
-    if (lastPromise === null) {
+  var successFonts = []
+  var errorFonts = []
+
+  fontsToProcess.reduce((lastPromise, currentFont, index) => {
+    var updateProgress = () => {
+      var isCompleted = successFonts.length + errorFonts.length === fontsToProcess.length
+      return {
+        isCompleted: isCompleted,
+        successFonts: successFonts.length,
+        errorFonts: errorFonts.length,
+        totalFonts: fontsToProcess.length
+      }
+    }
+    var processFont = () => {
       return generateFontPreview(currentFont, canvas, settings)
-        .then((font) => {
-          successCallback(font)
-        }, (font) => {
-          errorCallback(font)
+        .then((_successFont) => {
+          successFonts.push(_successFont)
+          onProgressCallback(_successFont, true, updateProgress())
+        }, (_errorFont) => {
+          errorFonts.push(_errorFont)
+          onProgressCallback(_errorFont, false, updateProgress())
         })
+    }
+    if (lastPromise === null) {
+      return processFont()
     } else {
-      return lastPromise.then(() => {
-        return generateFontPreview(currentFont, canvas, settings)
-          .then((font) => {
-            successCallback(font)
-          }, (font) => {
-            errorCallback(font)
-          })
-      }, (font) => {
-        return generateFontPreview(currentFont, canvas, settings)
-          .then((font) => {
-            successCallback(font)
-          }, (font) => {
-            errorCallback(font)
-          })
-      })
+      return lastPromise.then(processFont, processFont)
     }
   }, null)
 }
@@ -112,6 +114,8 @@ var generateFontPreview = (font, canvas, settings) => {
       canvas.height = settings.height
       canvas.width = settings.width
       console.log(font.family, 'rendered for preview')
+
+      context.clearRect(0, 0, settings.width, settings.height)
 
       context.fillStyle = '#ffffff'
       context.fillRect(0, 0, settings.width, settings.height)

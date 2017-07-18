@@ -40,7 +40,7 @@ var loadPreview = () => {
     } else if (response.status === 'error') {
       onError(response)
     }
-    if (response.isCompleted && response.isCompleted === true) {
+    if (response.progress.isCompleted === true) {
       console.log('complete')
       Dom.hideProgress()
     }

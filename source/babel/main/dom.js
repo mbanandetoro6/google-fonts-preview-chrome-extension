@@ -17,6 +17,8 @@ var fuseOptions = {
 }
 
 function appendFonts (fonts) {
+  setFontContainerHeight()
+  bindOnResizeEvent()
   // console.time('appendFonts')
   var container = jQuery(containerId)
   jQuery('#gfp-fonts-count').text(fonts.length)
@@ -26,7 +28,6 @@ function appendFonts (fonts) {
     var fontFamily = fonts[i]
     appendFont(fontFamily, container, i)
   }
-  setFontContainerHeight()
 
   // console.timeEnd('appendFonts')
 }
@@ -74,14 +75,14 @@ function injectFontPreview (font) {
   previewEl.append(`<img src="${font.base64Url}" />`)
 }
 
-function updateCacheStatus (text) {
-  jQuery('#gfp-font-progress').text(text)
+function updateCacheStatus (progress) {
+  var html = `<span id="gfp-font-progress-success">${progress.successFonts}</span> success and <span id="gfp-font-progress-error">${progress.errorFonts}</span> failed Out of ${progress.totalFonts}`
+  jQuery('#gfp-font-progress').html(html)
 }
 
 function hideProgress () {
-  jQuery('#gfp-cache-notice').slideUp(400, 'swing', () => {
-    setFontContainerHeight()
-  })
+  jQuery('#gfp-cache-notice').slideUp()
+  setTimeout(setFontContainerHeight, 800)
 }
 
 function bindSearchEvent () {
@@ -105,30 +106,30 @@ function performSearch (e) {
   }
 }
 
+function getHeight (id) {
+  var elm = jQuery(id + ':not(:hidden)')
+  if (elm.length) {
+    console.log(id, elm.outerHeight())
+    return elm.outerHeight()
+  } else {
+    return 0
+  }
+}
+
 function setFontContainerHeight () {
-  var offset
-  offset = jQuery('#gfp-section-settings').height()
-  offset = jQuery('#gfp-section-main').height()
-  offset = jQuery('#gfp-fonts-search-wrap').height()
-  offset = jQuery('#gfp-cache-notice').height()
-
-  var totalHeight = jQuery('#google-font-preview-extension').height()
-
+  var ids = ['#gfp-section-settings', '#gfp-section-main', '#gfp-fonts-search-wrap', '#gfp-cache-notice']
+  var offset = 0
+  ids.forEach(function (id) {
+    offset += getHeight(id)
+  })
+  var totalHeight = jQuery(window).height()
   var height = totalHeight - offset
   jQuery(containerId).height(height)
 }
 
-// function onPreviewFontLoaded (fontFamily) {
-//   var fontFamilyEl = jQuery('#' + fontFamily.id)
-//   fontFamilyEl.removeClass('gfp-font-family-loading gfp-font-family-loading-error')
-//   var previewEl = fontFamilyEl.find('.gfp-font-family-preview')
-//   previewEl.attr('style', previewEl.data('style'))
-// }
-
-// function onPreviewFontLoadError (fontFamily) {
-//   var fontFamilyEl = jQuery('#' + fontFamily.id)
-//   fontFamilyEl.addClass('gfp-font-family-loading-error')
-// }
+function bindOnResizeEvent () {
+  jQuery(window).resize(debounce(setFontContainerHeight, 250))
+}
 
 function clearFonts () {
   var container = jQuery(containerId)
