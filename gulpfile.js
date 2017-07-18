@@ -6,16 +6,15 @@ const gulpBabel = require('gulp-babel')
 const del = require('del')
 const plumber = require('gulp-plumber')
 var gulpBrowserify = require('gulp-browserify')
-var liveServer = require('live-server')
 
 gulp.task('scss', scss)
 gulp.task('scss:watch', gulp.series(scss, scssWatch))
 gulp.task('js', js)
 gulp.task('js:watch', gulp.series(js, jsWatch))
-gulp.task('serve', gulp.parallel('scss:watch', 'js:watch', serve))
+gulp.task('watch', gulp.parallel('scss:watch', 'js:watch'))
 gulp.task('clear', clear)
 gulp.task('build', gulp.series('clear', 'scss', 'js', build))
-gulp.task('default', gulp.task('serve'))
+gulp.task('default', gulp.task('watch'))
 
 function scss () {
   return gulp.src('./source/scss/*.scss')
@@ -53,17 +52,4 @@ function js () {
 
 function jsWatch () {
   return gulp.watch('./source/babel/**/*.js', js)
-}
-
-function serve () {
-  var params = {
-    port: 8585, // Set the server port. Defaults to 8080.
-    root: 'source', // Set root directory that's being served. Defaults to cwd.
-    open: true, // When false, it won't load your browser by default.
-    ignore: ['source/scss/**/*.*', 'source/babel/**/*.*', 'source/manifest.json'], // comma-separated string for paths to ignore
-    file: 'live-testing.html', // When set, serve this file for every 404 (useful for single-page applications)
-    wait: 0, // Waits for all changes, before reloading. Defaults to 0 sec.
-    logLevel: 2 // 0 = errors only, 1 = some, 2 = lots
-  }
-  liveServer.start(params)
 }
