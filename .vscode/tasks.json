@@ -5,7 +5,7 @@
     "tasks": [
         {
             "type": "gulp",
-            "task": "serve",
+            "task": "default",
             "isBackground": true,
             "label": "gulp watch files and live serve",
             "group": {

@@ -4,8 +4,11 @@
   "description": "google chrome extension to Test google web fonts",
   "main": "index.js",
   "scripts": {
+    "webpack:production": "cross-env NODE_ENV=production webpack -p",
+    "webpack:production:w": "cross-env NODE_ENV=production webpack -p -w",
+    "webpack:w": "webpack -w",
     "webpack": "webpack",
-    "webpack:w": "webpack -w"
+    "build": "cross-env NODE_ENV=production gulp build"
   },
   "repository": {
     "type": "git",
@@ -18,9 +21,15 @@
   },
   "homepage": "https://github.com/mbanandetoro6/google-fonts-preview-chrome-extension#readme",
   "dependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "cross-env": "^5.0.1",
     "del": "^3.0.0",
     "fuse.js": "^3.0.5",
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-clean-css": "^3.7.0",
+    "gulp-if": "^2.0.2",
     "gulp-plumber": "^1.1.0",
     "gulp-sass": "^3.1.0",
     "jquery": "^3.2.1",
