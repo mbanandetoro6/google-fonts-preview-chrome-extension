@@ -6,6 +6,8 @@
   "space_after_anon_function": true,
   "end_with_newline": true,
   "js": {
-    "indent_size": 2
+    "indent_size": 2,
+    "brace_style": "collapse,preserve-inline",
+    "break_chained_methods": true
   }
 }
