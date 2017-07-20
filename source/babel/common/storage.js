@@ -1,9 +1,6 @@
-/// <reference path="./../../../exclude/chrome-dev-intelligence.d.ts"/>
-/* global chrome */
+var storage = chrome.storage.local // use chrome local storage api
 
-var storage = chrome.storage.local
-
-function set (object) {
+export function set (object) {
   return new Promise((resolve, reject) => {
     storage.set(object, () => {
       if (chrome.runtime.lastError) {
@@ -15,7 +12,7 @@ function set (object) {
   })
 }
 
-function get (key) {
+export function get (key) {
   return new Promise((resolve, reject) => {
     storage.get(key, (data) => {
       if (chrome.runtime.lastError) {
@@ -33,29 +30,18 @@ function get (key) {
   })
 }
 // This will return array of fonts stored in storage
-function getFonts () {
+export function getFonts () {
   return get('fonts')
 }
 // this will save the fonts array to the fonts key in storage
-function setFonts (fontsArray) {
+export function setFonts (fontsArray) {
   var fonts = {
     fonts: fontsArray
   }
   return set(fonts)
 }
 
-function clearFonts () {
-  return new Promise((resolve, reject) => {
-    storage.remove('fonts', () => {
-      if (chrome.runtime.lastError) {
-        reject(new Error('Failed to retrieve data'))
-      }
-      resolve()
-    })
-  })
-}
-
-function clearStorage () {
+export function clearEntireStorage () {
   return new Promise((resolve, reject) => {
     storage.clear(() => {
       if (chrome.runtime.lastError) {
@@ -66,11 +52,10 @@ function clearStorage () {
   })
 }
 
-module.exports = {
-  fonts: {
-    save: setFonts,
-    get: getFonts,
-    clear: clearFonts
-  },
-  clear: clearStorage
-}
+// module.exports = {
+//   fonts: {
+//     save: setFonts,
+//     get: getFonts
+//   },
+//   clear: clearStorage
+// }

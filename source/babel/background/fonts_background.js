@@ -1,6 +1,7 @@
-const WebFontLoader = require('webfontloader') // font loader to load fonts and get callback
+import { getFonts as getFontsCache, setFonts as saveFontsCache } from './../common/storage.js'
 const util = require('./../common/util.js') // common functions mostly ajax
-const storage = require('./../common/storage.js') // store and retrieve font cache
+const WebFontLoader = require('webfontloader') // font loader to load fonts and get callback
+// const storage = require('./../common/storage.js') // store and retrieve font cache
 
 const fontUrlBase = 'https://fonts.googleapis.com/css?family=' // url used to build font url for google font family
 // const apiUrl = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&fields=items(category%2Cfamily%2ClastModified%2Csubsets%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E'
@@ -19,9 +20,11 @@ export function getFonts () { // exported function to be used to get fonts
     util.jsonWebRequest(apiUrl) // request the google fonts api
       .then((response) => { // on success
         buildFonts(response.items) // generate custom properties for each font
-        mergeCache().then(resolve).catch(() => { // if cache is available then merge with cache
-          resolve(fonts) // return fonts
-        })
+        mergeCache() // merge with cache
+          .then(resolve) // on success
+          .catch(() => { // if cache is available then merge with cache
+            resolve(fonts) // return fonts
+          })
       })
       .catch(reject) // on error
   })
@@ -33,7 +36,8 @@ function buildFonts (rawFontsList) { // generate custom properties for each font
   })
   var newFonts = filteredFonts.map((font) => { // modify each font object in array
     var _font = font
-    _font.id = ('font_' + _font.family.replace(/\s+/g, '') + _font.lastModified.replace(/\D+/g, '')).toLowerCase() // generate unique id from font name and last modified date
+    _font.id = ('font_' + _font.family.replace(/\s+/g, '') + _font.lastModified.replace(/\D+/g, ''))
+      .toLowerCase() // generate unique id from font name and last modified date
     var name = _font.family.replace(/\s+/g, '+') // generate name , replace space with plus sign, in existing font name
     _font.url = `${fontUrlBase}${name}:${_font.variants.join(',')}` // generate font url, to be used when loading font in page
     var previewText = encodeURIComponent(_font.family) // text for preview utl (font name is used)
@@ -48,7 +52,7 @@ function buildFonts (rawFontsList) { // generate custom properties for each font
 
 function mergeCache () { // this function will check for cache in storage, and merge with it if available
   return new Promise((resolve, reject) => {
-    storage.fonts.get() // try to get font cache from storage
+    getFontsCache() // try to get font cache from storage
       .then((cachedFonts) => { // on success
         var mergedFonts = fonts.map((font) => { // merge with fonts, for matched fonts
           var _font = font
@@ -60,7 +64,8 @@ function mergeCache () { // this function will check for cache in storage, and m
         })
         fonts = mergedFonts // save fonts with cache to local variable
         resolve(fonts) // return fonts with cache
-      }).catch(() => { // on error
+      })
+      .catch(() => { // on error
         reject(new Error('0 cached fonts found')) // reject with error
       })
   })
@@ -138,7 +143,7 @@ function onPreviewRenderComplete (processedFonts, successFonts, errorFonts) { //
     return _font
   })
   fonts = updatedFonts // save the updated fonts with preview to the local variable
-  storage.fonts.save(updatedFonts) // replace the fonts in cache
+  saveFontsCache(updatedFonts) // replace the fonts in cache
 }
 
 function generateFontPreview (font, canvas, settings) { // this function will generate base64 image preview of font using canvas
@@ -164,7 +169,8 @@ function generateFontPreview (font, canvas, settings) { // this function will ge
         // context.imageSmoothingEnabled = false
         context.fillText(loadedFont.family, 0, settings.height / 2) // draw text on canvas
         var dataUrl = canvas.toDataURL('image/jpeg', 1) // export to data url, we are using jpeg to pass quality value to 100%, png defaults to only 92%
-        document.querySelector(`head link[href="${loadedFont.previewUrl}"]`).remove() // remove the appended font link from the head
+        document.querySelector(`head link[href="${loadedFont.previewUrl}"]`)
+          .remove() // remove the appended font link from the head
         font.base64Url = dataUrl // save the base 64 utl in font properties
         resolve(font) // return/resolve promise with generated font base 64 preview data
       })
