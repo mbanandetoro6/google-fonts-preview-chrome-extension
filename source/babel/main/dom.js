@@ -2,6 +2,7 @@ var jQuery = require('jquery')
 var Fuse = require('fuse.js')
 var FontsStore = require('./fontsStore.js')
 const debounce = require('lodash/debounce.js')
+const previewFonts = require('./previewFonts.js')
 
 var containerId = '#gfp-font-families'
 var fuseOptions = {
@@ -16,26 +17,37 @@ var fuseOptions = {
   ]
 }
 
-function appendFonts (fonts) {
+function bindEvents () {
   setFontContainerHeight()
-  bindOnResizeEvent()
-  // console.time('appendFonts')
+  bindOnWindowResize()
+  bindOnFontClick()
+  bindOnItalicClick()
+}
+
+function appendFonts (fonts) {
+  bindEvents()
   var container = jQuery(containerId)
   jQuery('#gfp-fonts-count').text(fonts.length)
   clearFonts()
-
+  var html = ''
   for (var i = 0; i < fonts.length; i++) {
     var fontFamily = fonts[i]
-    appendFont(fontFamily, container, i)
+    html += getHtmlForFont(fontFamily, i)
   }
-
-  // console.timeEnd('appendFonts')
+  container.append(html)
 }
 
-function appendFont (fontFamily, container, index) {
+function getHtmlForFont (fontFamily, index) {
   var top = index * 40
-  var preview = fontFamily.base64Url ? `<img src="${fontFamily.base64Url}" />` : fontFamily.family
-  var html = `<div id="${fontFamily.id}" style="top:${top}px" class="gfp-font-family gfp-font-visible gfp-font-family-loading gfp-clearfix" data-index="5" data-url="${fontFamily.url}" >
+  var preview = fontFamily.base64Url ? `<img alt="${fontFamily.family}" title="${fontFamily.family}" src="${fontFamily.base64Url}" />` : fontFamily.family
+  var supportedVariant = fontFamily.variants.includes('regular') ? 400 : fontFamily.variants[0]
+  var html = `<div  id="${fontFamily.id}" 
+                    style="top:${top}px" 
+                    class="gfp-font-family gfp-font-visible gfp-font-family-loading gfp-clearfix"
+                    data-index="5"
+                    data-font-family="${fontFamily.family}" 
+                    data-font-variant="${supportedVariant}"
+                    data-font-url="${fontFamily.url}" >
                     <span class="gfp-font-family-preview">
                       ${preview}
                     </span>
@@ -43,7 +55,12 @@ function appendFont (fontFamily, container, index) {
                       <i class="fa fa-angle-down"></i>
                     </a>
               </div>`
-  container.append(html)
+  return html
+}
+
+function clearFonts () {
+  var container = jQuery(containerId)
+  container.empty()
 }
 
 function filterFonts (fonts) {
@@ -85,31 +102,29 @@ function hideProgress () {
   setTimeout(setFontContainerHeight, 800)
 }
 
+function showProgress () {
+  jQuery('#gfp-cache-notice').show()
+  setTimeout(setFontContainerHeight, 800)
+}
+
 function bindSearchEvent () {
   jQuery('#gfp-fonts-search-bar').keyup(debounce(performSearch, 50))
 }
 
-function performSearch (e) {
-  console.log(e)
-  console.log('hi')
+function performSearch () {
   var searchTerm = document.getElementById('gfp-fonts-search-bar').value.trim()
   if (searchTerm === '') {
     resetFontSearch()
   } else {
-    console.time('search')
     var fuse = new Fuse(FontsStore.getFonts(), fuseOptions)
     var fontSearchResult = fuse.search(searchTerm)
-    console.timeEnd('search')
-    console.time('filter')
     filterFonts(fontSearchResult)
-    console.timeEnd('filter')
   }
 }
 
 function getHeight (id) {
   var elm = jQuery(id + ':not(:hidden)')
   if (elm.length) {
-    console.log(id, elm.outerHeight())
     return elm.outerHeight()
   } else {
     return 0
@@ -127,18 +142,53 @@ function setFontContainerHeight () {
   jQuery(containerId).height(height)
 }
 
-function bindOnResizeEvent () {
+function bindOnWindowResize () {
   jQuery(window).resize(debounce(setFontContainerHeight, 250))
 }
 
-function clearFonts () {
-  var container = jQuery(containerId)
-  container.empty()
+function bindOnFontClick () {
+  var cssSelectorsEl = jQuery('#gfp-css-selectors')
+  var fontWeightEl = jQuery('#gfp-font-weight')
+  var italicEl = jQuery('#gfp-action-italic')
+  jQuery(containerId).on('click', '>div.gfp-font-family', function () {
+    var fontElement = jQuery(this)
+    var details = {
+      family: fontElement.data('font-family'),
+      url: fontElement.data('font-url'),
+      variant: fontElement.data('font-variant'),
+      cssSelectors: cssSelectorsEl.val() || 'body',
+      fontWeight: fontWeightEl.val() || '400',
+      italic: italicEl.hasClass('gfp-italic-active')
+    }
+    previewFonts.onFontClick(details, injectStyles, injectFont)
+  })
 }
+
+function injectStyles (html) {
+  // var styleTag = jQuery('style#gfp-font-style')
+  // if (styleTag.length) {
+  //   styleTag.replaceWith(html)
+  // } else {
+  //   jQuery('head').append(html)
+  // }
+  jQuery('head').append(html)
+}
+
+function injectFont (data) {
+}
+
+function bindOnItalicClick () {
+  var italicEl = jQuery('#gfp-action-italic')
+  italicEl.click(() => {
+    italicEl.toggleClass('gfp-italic-active')
+  })
+}
+
 module.exports = {
   appendFonts: appendFonts,
   injectFontPreview: injectFontPreview,
   updateCacheStatus: updateCacheStatus,
   hideProgress: hideProgress,
-  bindSearchEvent: bindSearchEvent
+  bindSearchEvent: bindSearchEvent,
+  showProgress: showProgress
 }

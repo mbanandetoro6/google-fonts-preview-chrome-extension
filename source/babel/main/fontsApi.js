@@ -1,16 +1,37 @@
 /* global chrome */
 var Dom = require('./dom.js')
 var FontsStore = require('./fontsStore.js')
+const WebFontLoader = require('webfontloader')
 
-var loadFonts = () => {
+var injectFontIntoPage = (data) => {
+  return new Promise((resolve, reject) => {
+    WebFontLoader.load({
+      classes: false,
+      custom: {
+        families: [data.family],
+        urls: [data.url]
+      },
+      fontactive: function (font, fwd) {
+        resolve(font)
+      },
+      fontinactive: function (font) {
+        reject(font)
+      }
+    })
+  })
+}
+
+var loadFontsFromExtension = () => {
   getFonts().then((fonts) => {
     FontsStore.storeFonts(fonts)
     Dom.appendFonts(fonts)
     Dom.bindSearchEvent()
-    loadPreview()
-  }, (error) => {
-    window.alert(error.message)
-  })
+    loadPreview(fonts)
+  }
+    // , (error) => {
+    // window.alert(error.message)
+    // }
+  )
 }
 
 var getFonts = () => {
@@ -18,6 +39,7 @@ var getFonts = () => {
     chrome.runtime.sendMessage({
       request: 'fonts'
     }, function (response) {
+      console.log(response)
       if (response.status && response.status === 'success') {
         resolve(response.fonts)
       } else if (response.status && response.status === 'error') {
@@ -27,24 +49,31 @@ var getFonts = () => {
   })
 }
 
-var loadPreview = () => {
-  var port = chrome.runtime.connect({
-    name: 'fontPreview'
-  })
-  port.postMessage({
-    request: 'fontPreview'
-  })
-  port.onMessage.addListener((response) => {
-    if (response.status === 'success') {
-      onSuccess(response)
-    } else if (response.status === 'error') {
-      onError(response)
-    }
-    if (response.progress.isCompleted === true) {
-      console.log('complete')
-      Dom.hideProgress()
-    }
-  })
+var loadPreview = (fonts) => {
+  var fontsWithoutPreview = fonts.filter((font) => font.base64Url === undefined)
+  if (fontsWithoutPreview.length) {
+    Dom.showProgress()
+    var port = chrome.runtime.connect({
+      name: 'fontPreview'
+    })
+    port.postMessage({
+      request: 'fontPreview',
+      fontsWithoutPreview: fontsWithoutPreview
+    })
+    port.onMessage.addListener((response) => {
+      if (response.status === 'success') {
+        onSuccess(response)
+      } else if (response.status === 'error') {
+        onError(response)
+      }
+      if (response.progress.isCompleted === true) {
+        console.log('complete')
+        Dom.hideProgress()
+      }
+    })
+  } else {
+    Dom.hideProgress()
+  }
 }
 
 var onSuccess = (response) => {
@@ -58,5 +87,6 @@ var onError = (response) => {
 }
 
 module.exports = {
-  loadFonts: loadFonts
+  loadFonts: loadFontsFromExtension,
+  injectFontIntoPage: injectFontIntoPage
 }

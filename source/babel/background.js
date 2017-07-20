@@ -17,7 +17,6 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
   if (message.request && message.request === 'fonts') {
     FontsApi.getFonts()
       .then((fonts) => {
-        console.log(fonts)
         response({
           status: 'success',
           fonts: fonts
@@ -37,14 +36,16 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name === 'fontPreview') {
     port.onMessage.addListener((message, port) => {
-      if (message.request && message.request === 'fontPreview') {
-        getFontsPreview((response) => {
-          port.postMessage(response)
-          if (response.progress.isCompleted) {
+      console.log(message)
+      if (message.request && message.request === 'fontPreview' && message.fontsWithoutPreview) {
+        var onProgress = (msg) => {
+          port.postMessage(msg)
+          if (msg.progress.isCompleted) {
             port.disconnect()
             console.log('port disconnect')
           }
-        })
+        }
+        getFontsPreview(message.fontsWithoutPreview, onProgress)
       }
     })
   } else {
@@ -52,16 +53,16 @@ chrome.runtime.onConnect.addListener((port) => {
   }
 })
 
-function getFontsPreview (response) {
-  FontsApi.getFonts().then((fonts) => {
-    var onprogress = (font, isSuccess, currentProgress) => {
-      var msg = {
-        status: isSuccess ? 'success' : 'error',
-        font: font,
-        progress: currentProgress
-      }
-      response(msg)
+function getFontsPreview (fontsWithoutPreview, onProgress) {
+  console.log('generating Preview')
+  console.table(fontsWithoutPreview)
+  var onPreviewProgress = (font, isSuccess, currentProgress) => {
+    var msg = {
+      status: isSuccess ? 'success' : 'error',
+      font: font,
+      progress: currentProgress
     }
-    FontsApi.getFontsPreviewImages(fonts, onprogress)
-  })
+    onProgress(msg)
+  }
+  FontsApi.getFontsPreviewImages(fontsWithoutPreview, onPreviewProgress)
 }

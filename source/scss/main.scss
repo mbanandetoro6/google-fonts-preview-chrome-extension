@@ -27,6 +27,7 @@ body {
     box-shadow:10px 10px 12px rgba(0, 0, 0, .3);
     transition: box-shadow $duration;
     animation: gfp-slide-right $duration forwards;
+    animation-timing-function:$easeInOutSine;
     overflow: hidden;
     &:hover {
         box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
@@ -127,7 +128,7 @@ body {
             float: right;
             margin-right: $spacing/2;
             opacity: 0.4;
-            &.active {
+            &.gfp-italic-active {
                 opacity: 1;
                 color: $dark-primary-color;
             }
@@ -192,10 +193,7 @@ body {
             background: $seprator-color;
         }
         &::-webkit-scrollbar-thumb {
-            background: #666;
-        }
-        &::-webkit-scrollbar-thumb {
-            background: #666;
+            background: $primary-color;
         }
     }
     .gfp-font-family {
