@@ -1,5 +1,5 @@
 import { getFonts } from './fontsApi.js' // used for getting fonts for searching
-import { onFontClick } from './previewFonts.js' // used for preview font on page
+import { onFontClick } from './preview.js' // used for preview font on page
 var jQuery = require('jquery') // dom manipulations
 var Fuse = require('fuse.js') // fuzzy search functionality
 const debounce = require('lodash/debounce.js') // debounce search event, to limit the execution rate
