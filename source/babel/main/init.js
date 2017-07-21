@@ -23,7 +23,7 @@ function injectHtml (url) { // get and inject html into page
 
 function injectCss (url) { // inject css link into head
   jQuery('head')
-    .append(`<link rel="stylesheet" type="text/css" href="${url}">`)
+    .append(`<link id="gfp-extension-stylesheet" rel="stylesheet" type="text/css" href="${url}">`)
 }
 
 function loadFontsAndFontIcons () { // load fonts for text and also font icons

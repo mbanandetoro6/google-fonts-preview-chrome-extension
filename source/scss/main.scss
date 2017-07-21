@@ -1,9 +1,49 @@
 @import '_variables.scss';
 body {
-    margin: 0;
+    margin: 0; // &.gfp-active {
+    //     transition: padding-left $duration $easeInOutSine;
+    //     &.gfp-extension-visible {
+    //         padding-left: $width;
+    //         overflow-x: hidden;
+    //     }
+    // }
+}
+
+#google-font-preview-show-hide-trigger {
+    width: 30px!important;
+    position: fixed;
+    left: $width!important;
+    top: $spacing!important;
+    height: 40px;
+    background-color: $primary-color!important;
+    opacity: 0;
+    animation: gfp-slide-right $duration forwards;
+    animation-delay: 1s;
+    animation-timing-function: $easeInOutSine;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
+    transition: left $duration $easeInOutSine;
+    border-radius: 0 $radius $radius 0;
+    i {
+        font-size: 14px!important;
+        line-height: 40px!important;
+        color: white!important;
+        transition: transform $duration*2 $easeInOutSine;
+        width: 30px!important;
+        text-align: center!important;
+        font-family: 'FontAwesome'!important;
+    }
+    &.gfp-extension-hidden {
+        left: 0!important;
+        i {
+            transform: rotate(180deg)
+        }
+    }
 }
 
 #google-font-preview-extension {
+    .fa {
+        font-family: 'FontAwesome'!important;
+    }
     section,
     div,
     * {
@@ -13,22 +53,27 @@ body {
     }
     &,
     * {
-        box-sizing: border-box;
+        &,&:after,&:before{
+            box-sizing: border-box;
+        }
+        
+        font-family: $fontFamily!important;
     }
-    font-family: $fontFamily;
-    font-size: 14px;
+    
+    font-size: 14px!important;
     position: fixed;
     top: 0;
     bottom: 0;
-    z-index: $z-index;
+    z-index: $z-index!important;
     width: $width;
-    background: $bg-color;
-    color: $text-color;
+    background: $bg-color!important;
+    color: $text-color!important;
     box-shadow:10px 10px 12px rgba(0, 0, 0, .3);
-    transition: box-shadow $duration;
+    transition: box-shadow $duration,
+    left $duration $easeInOutSine;
     animation: gfp-slide-right $duration forwards;
     animation-timing-function:$easeInOutSine;
-    overflow: hidden;
+    overflow-y: hidden;
     &:hover {
         box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
     }
@@ -38,6 +83,12 @@ body {
     }
     .fa {
         line-height: 40px!important;
+    }
+    &.gfp-on-left {
+        left: 0;
+        &.gfp-extension-hide {
+            left: - $width;
+        }
     }
     #gfp-loader {
         background-color: white;
@@ -211,10 +262,24 @@ body {
             opacity: 1;
             visibility: visible;
         }
+        &.gfp-font-family-applying::after{
+            content: "";
+            display: block;
+            position: absolute;
+            top:10px;
+            right: 10px;
+            height: 20px;
+            width: 20px;
+            border:2px solid $primary-color;
+            border-color:transparent $primary-color transparent $primary-color;
+            animation: gfp-loader $duration*7 $easeInOutBack 0s infinite normal forwards;
+            border-radius:50%;
+        }
         .gfp-font-family-preview {
-            margin-right: 40px;
+            // margin-right: 40px;
             display: block;
             padding-left: $spacing/2;
+            padding-right: $spacing/2;
             font-size: 1.2em;
             height: 40px;
             overflow: hidden;
@@ -229,18 +294,18 @@ body {
                 color: $error-color;
             }
         }
-        .gfp-font-family-action {
-            position: absolute;
-            display: block;
-            padding: 0;
-            border-left: 1px solid $seprator-color;
-            width: 40px;
-            height: 40px;
-            right: 0;
-            top: 0;
-            text-align: center;
-            z-index: $z-index+20;
-        }
+        // .gfp-font-family-action {
+        //     position: absolute;
+        //     display: block;
+        //     padding: 0;
+        //     border-left: 1px solid $seprator-color;
+        //     width: 40px;
+        //     height: 40px;
+        //     right: 0;
+        //     top: 0;
+        //     text-align: center;
+        //     z-index: $z-index+20;
+        // }
         border-bottom: 1px solid $seprator-color;
         &:last-child {
             border-bottom: none;
@@ -299,9 +364,15 @@ body {
 
 @keyframes gfp-loader {
     from {
-        transform: rotate(0);
+        transform: rotate(0) scale(1);
+        opacity: 1;
+    }
+    50%{
+        transform: rotate(180deg) scale(0.8);
+        opacity: 0.8;
     }
     to {
-        transform: rotate(360deg);
+        transform: rotate(360deg) scale(1);
+        opacity: 1;
     }
 }

@@ -6,9 +6,9 @@ const debounce = require('lodash/debounce.js') // debounce search event, to limi
 
 var container // jquery object for font container, will be assigned in init function
 var searchBar // jquery object for search bar, will be assigned in init function
-var cssSelectorsEl = jQuery('#gfp-css-selectors')
-var fontWeightEl = jQuery('#gfp-font-weight')
-var italicEl = jQuery('#gfp-action-italic')
+var cssSelectorsEl
+var fontWeightEl
+var italicEl
 var fuseOptions = { // font search options
   shouldSort: true, // enable sorted searching
   threshold: 0.6, // fuzziness
@@ -26,6 +26,9 @@ function init () { // initialize
   container = jQuery('#gfp-font-families') // save jquery element reference in container
   container.empty() // clear the font container
   searchBar = jQuery('#gfp-fonts-search-bar') // save the search bar object as variable, this will be used pn every search-bar type event
+  cssSelectorsEl = jQuery('#gfp-css-selectors')
+  fontWeightEl = jQuery('#gfp-font-weight')
+  italicEl = jQuery('#gfp-action-italic')
   fuse = new Fuse(getFonts(), fuseOptions)
 
   setFontContainerHeight() // set container height
@@ -33,6 +36,9 @@ function init () { // initialize
   bindOnFontClick() // bind the user click event on font
   bindOnItalicClick() // italic on/off
   bindSearchEvent() // search bar keyup event
+  bindOnHideShowButton()
+  injectEmptyStyleTag()
+  bindClearStyleClickEvent()
 }
 
 export function injectFontPreview (font) { // this will be used to inject preview, after the font is appended in page
@@ -55,7 +61,7 @@ export function appendFonts (fonts) { // append provided fonts
 function getHtmlForFont (fontFamily, index) { // generate html for font
   var top = index * 40 // use absolute position and css top, using this for sorting based on search
   // if preview image is available , then use it, otherwise just use font name, and preview will be injected later
-  var preview = fontFamily.base64Url ? `<img alt="${fontFamily.family}" title="${fontFamily.family}" src="${fontFamily.base64Url}" />` : fontFamily.family
+  var preview = fontFamily.base64Url ? `<img alt="${fontFamily.family}" title="${fontFamily.family} | Styles:- ${fontFamily.variants.join(',')}" src="${fontFamily.base64Url}" />` : fontFamily.family
   var supportedVariant = fontFamily.variants.includes('regular') ? 400 : fontFamily.variants[0] // get supported variant, if 400/regular is not supported
   // build html,use unique id for search functionality and also used when appending delayed preview
   // also save some font properties in data object , which will be needed later in font click event
@@ -69,9 +75,6 @@ function getHtmlForFont (fontFamily, index) { // generate html for font
                     <span class="gfp-font-family-preview">
                       ${preview}
                     </span>
-                    <a class="gfp-font-family-action">
-                      <i class="fa fa-angle-down"></i>
-                    </a>
               </div>`
   return html // return generated html
 }
@@ -145,25 +148,40 @@ function bindOnWindowResize () {
 function bindOnFontClick () { // triggered by user click on font
   container.on('click', '>div.gfp-font-family', function () { // use on click handler for dynamic event binding
     var fontElement = jQuery(this) // font element
+    fontElement.addClass('gfp-font-family-applying')
     var data = { // gather data to be passed
       family: fontElement.data('font-family'), // font name
       url: fontElement.data('font-url'), // font url, to load into page, and export if needed
       variant: fontElement.data('font-variant'), // supported font variant, if regular is not supported
-      cssSelectors: cssSelectorsEl.val() || 'body', // get css selectors OR use body if not supplied
+      cssSelectors: cssSelectorsEl.val() || '*', // get css selectors OR use body if not supplied
       fontWeight: fontWeightEl.val() || '400', // get selected font weight OR supply default 400
       italic: italicEl.hasClass('gfp-italic-active') // if italic is selected ?
     }
+    console.log(cssSelectorsEl.val())
     onFontClick(data) // trigger the font click event in preview.js
+      .then(() => {
+        fontElement.removeClass('gfp-font-family-applying')
+      })
+      .catch(() => {
+        fontElement.removeClass('gfp-font-family-applying')
+      })
   })
 }
 
-export function injectStyles (html) { // inject css into head tag
-  var styleTag = jQuery('style#gfp-font-style')
-  if (styleTag.length) { // check if already has css appended
-    styleTag.replaceWith(html) // replace with existing
-  } else {
-    jQuery('head').append(html) // append to head, if not exists
-  }
+export function injectStyles (rule) { // inject css into head tag
+  jQuery('style#gfp-font-styles').append(rule)
+}
+
+function clearInjectedStyles () {
+  jQuery('style#gfp-font-styles').empty()
+}
+
+function bindClearStyleClickEvent () {
+  jQuery('#gfp-action-reset').click(() => clearInjectedStyles())
+}
+
+function injectEmptyStyleTag () {
+  jQuery('#gfp-extension-stylesheet').before('<style id="gfp-font-styles"></style>')
 }
 
 function bindOnItalicClick () { // toggle italic button
@@ -171,6 +189,14 @@ function bindOnItalicClick () { // toggle italic button
   italicEl.click(() => {
     italicEl.toggleClass('gfp-italic-active')
   })
+}
+
+function bindOnHideShowButton () {
+  jQuery('#google-font-preview-show-hide-trigger')
+    .click(function () {
+      jQuery(this).toggleClass('gfp-extension-hidden')
+      jQuery('#google-font-preview-extension').toggleClass('gfp-extension-hide')
+    })
 }
 
 // #REGION cache-progress
