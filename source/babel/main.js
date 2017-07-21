@@ -1,10 +1,7 @@
 'use strict'
-var Initialize = require('./main/init.js')
-var Fonts = require('./main/fontsApi.js')
+import { init as Initialize } from './main/init.js'
+import { loadFontsFromExtension as loadFonts } from './main/fontsApi.js'
 
-Initialize().then(afterInit).catch((error) => {
-  window.alert(error.message)
-})
-function afterInit () {
-  Fonts.loadFonts()
-}
+Initialize() // try to init
+  .then(() => loadFonts()) // on success load the fonts
+  .catch(error => window.alert(error.message)) // on error alert the user with error

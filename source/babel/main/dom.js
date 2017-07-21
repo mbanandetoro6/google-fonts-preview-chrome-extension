@@ -1,47 +1,65 @@
-var jQuery = require('jquery')
-var Fuse = require('fuse.js')
-var FontsStore = require('./fontsStore.js')
-const debounce = require('lodash/debounce.js')
-const previewFonts = require('./previewFonts.js')
+import { getFonts } from './fontsApi.js' // used for getting fonts for searching
+import { onFontClick } from './previewFonts.js' // used for preview font on page
+var jQuery = require('jquery') // dom manipulations
+var Fuse = require('fuse.js') // fuzzy search functionality
+const debounce = require('lodash/debounce.js') // debounce search event, to limit the execution rate
 
-var containerId = '#gfp-font-families'
-var fuseOptions = {
-  shouldSort: true,
-  threshold: 0.6,
+var container // jquery object for font container, will be assigned in init function
+var searchBar // jquery object for search bar, will be assigned in init function
+var cssSelectorsEl = jQuery('#gfp-css-selectors')
+var fontWeightEl = jQuery('#gfp-font-weight')
+var italicEl = jQuery('#gfp-action-italic')
+var fuseOptions = { // font search options
+  shouldSort: true, // enable sorted searching
+  threshold: 0.6, // fuzziness
   location: 0,
   distance: 100,
   maxPatternLength: 16,
   minMatchCharLength: 1,
-  keys: [
+  keys: [ // which object properties to search on
     'family'
   ]
 }
+var fuse // fuse.js object ,for search functionality, will be assigned in init function
 
-function bindEvents () {
-  setFontContainerHeight()
-  bindOnWindowResize()
-  bindOnFontClick()
-  bindOnItalicClick()
+function init () { // initialize
+  container = jQuery('#gfp-font-families') // save jquery element reference in container
+  container.empty() // clear the font container
+  searchBar = jQuery('#gfp-fonts-search-bar') // save the search bar object as variable, this will be used pn every search-bar type event
+  fuse = new Fuse(getFonts(), fuseOptions)
+
+  setFontContainerHeight() // set container height
+  bindOnWindowResize() // event handler to adjust the container height on resize
+  bindOnFontClick() // bind the user click event on font
+  bindOnItalicClick() // italic on/off
+  bindSearchEvent() // search bar keyup event
 }
 
-function appendFonts (fonts) {
-  bindEvents()
-  var container = jQuery(containerId)
-  jQuery('#gfp-fonts-count').text(fonts.length)
-  clearFonts()
-  var html = ''
-  for (var i = 0; i < fonts.length; i++) {
+export function injectFontPreview (font) { // this will be used to inject preview, after the font is appended in page
+  var fontEl = jQuery('#' + font.id) // find the font from page, using the unique font id
+  var previewEl = fontEl.children('.gfp-font-family-preview') // select preview element (child)
+  previewEl.empty().append(`<img src="${font.base64Url}" />`) // clear existing element, and append image preview (base64 Data)
+  fontEl.removeClass('gfp-font-family-loading gfp-font-family-loading-error') // remove any loading and error class
+}
+// #REGION append fonts
+export function appendFonts (fonts) { // append provided fonts
+  init() // initialize, will also clear font container
+  var html = '' // build html for every fonts
+  for (var i = 0; i < fonts.length; i++) { // loop through each font
     var fontFamily = fonts[i]
-    html += getHtmlForFont(fontFamily, i)
+    html += getHtmlForFont(fontFamily, i) // generate html for each font, concat into html
   }
-  container.append(html)
+  container.append(html) // append all fonts into container
 }
 
-function getHtmlForFont (fontFamily, index) {
-  var top = index * 40
+function getHtmlForFont (fontFamily, index) { // generate html for font
+  var top = index * 40 // use absolute position and css top, using this for sorting based on search
+  // if preview image is available , then use it, otherwise just use font name, and preview will be injected later
   var preview = fontFamily.base64Url ? `<img alt="${fontFamily.family}" title="${fontFamily.family}" src="${fontFamily.base64Url}" />` : fontFamily.family
-  var supportedVariant = fontFamily.variants.includes('regular') ? 400 : fontFamily.variants[0]
-  var html = `<div  id="${fontFamily.id}" 
+  var supportedVariant = fontFamily.variants.includes('regular') ? 400 : fontFamily.variants[0] // get supported variant, if 400/regular is not supported
+  // build html,use unique id for search functionality and also used when appending delayed preview
+  // also save some font properties in data object , which will be needed later in font click event
+  var html = `<div  id="${fontFamily.id}"
                     style="top:${top}px" 
                     class="gfp-font-family gfp-font-visible gfp-font-family-loading gfp-clearfix"
                     data-index="5"
@@ -55,140 +73,128 @@ function getHtmlForFont (fontFamily, index) {
                       <i class="fa fa-angle-down"></i>
                     </a>
               </div>`
-  return html
+  return html // return generated html
+}
+// #END-REGION append fonts
+
+// #REGION search
+function bindSearchEvent () {
+  // on search bar type event, call the search function, and debounce it, to limit the execution rate
+  searchBar.keyup(debounce(performSearch, 50))
 }
 
-function clearFonts () {
-  var container = jQuery(containerId)
-  container.empty()
-}
-
-function filterFonts (fonts) {
-  var container = jQuery(containerId)
-  var allFonts = container.find('>div')
-  allFonts.removeClass('gfp-font-visible').css('top', 0)
-  for (var i = 0; i < fonts.length; i++) {
-    var font = fonts[i]
-    jQuery('#' + font.id).css('top', i * 40).addClass('gfp-font-visible')
+function showSearchedFonts (fonts) { // show only matched fonts in search, and in correct order
+  var allFonts = container.children('div') // find every fonts
+  allFonts
+    .removeClass('gfp-font-visible') // remove the visible class, by default the fonts are hidden using css,
+    .css('top', 0) // use css top 0, to prevent long scroll
+  for (var i = 0; i < fonts.length; i++) { // loop through each font, matched by search
+    jQuery('#' + fonts[i].id) // select font using id
+      .css('top', i * 40) // apply css top, to sort in correct order, of matched elements
+      .addClass('gfp-font-visible') // make matched fonts visible
   }
-  // fonts.not(ids.join(',')).hide()
 }
 
-function resetFontSearch () {
-  var container = jQuery(containerId)
-  var allFonts = container.find('>div')
-  allFonts.each((index, element) => {
-    jQuery(element).css('top', (index * 40) + 'px').addClass('gfp-font-visible')
+function resetFontSearch () { // reset search, make all fonts visible, and sort in default order
+  var allFonts = container.children('div') // get all fonts
+  allFonts.each((index, element) => { // loop through each
+    jQuery(element).css('top', (index * 40) + 'px') // change the css top, reset it to initial order of fonts
+      .addClass('gfp-font-visible') // add class visible to reset the last search
   })
 }
 
-function injectFontPreview (font) {
-  var id = font.id
-  var element = jQuery('#gfp-font-families')
-  element.removeClass('gfp-font-family-loading gfp-font-family-loading-error')
-  var fontEl = element.find('#' + id)
-  var previewEl = fontEl.find('.gfp-font-family-preview')
-  previewEl.text('')
-  previewEl.append(`<img src="${font.base64Url}" />`)
-}
-
-function updateCacheStatus (progress) {
-  var html = `<span id="gfp-font-progress-success">${progress.successFonts}</span> success and <span id="gfp-font-progress-error">${progress.errorFonts}</span> failed Out of ${progress.totalFonts}`
-  jQuery('#gfp-font-progress').html(html)
-}
-
-function hideProgress () {
-  jQuery('#gfp-cache-notice').slideUp()
-  setTimeout(setFontContainerHeight, 800)
-}
-
-function showProgress () {
-  jQuery('#gfp-cache-notice').show()
-  setTimeout(setFontContainerHeight, 800)
-}
-
-function bindSearchEvent () {
-  jQuery('#gfp-fonts-search-bar').keyup(debounce(performSearch, 50))
-}
-
-function performSearch () {
-  var searchTerm = document.getElementById('gfp-fonts-search-bar').value.trim()
-  if (searchTerm === '') {
-    resetFontSearch()
-  } else {
-    var fuse = new Fuse(FontsStore.getFonts(), fuseOptions)
-    var fontSearchResult = fuse.search(searchTerm)
-    filterFonts(fontSearchResult)
+function performSearch () { // called on search-bar type event
+  var searchTerm = searchBar.val().trim() // get the search bar text, use the get element by ID
+  if (searchTerm === '') { // if search is empty
+    resetFontSearch() // reset the fonts
+  } else { // if search bar is not empty
+    var fontSearchResult = fuse.search(searchTerm) // trigger the search using fuse, settings assigned at init
+    showSearchedFonts(fontSearchResult) // filter the fonts, and show only matched fonts in search, also sort them in order
   }
 }
+// #END-REGION search
 
-function getHeight (id) {
+// #REGION font container height setup
+function getHeight (id) { // get height of the element by id, return 0 if the element is hidden
   var elm = jQuery(id + ':not(:hidden)')
   if (elm.length) {
-    return elm.outerHeight()
+    return elm.outerHeight() // get and return height including margin and padding and border
   } else {
     return 0
   }
 }
 
-function setFontContainerHeight () {
-  var ids = ['#gfp-section-settings', '#gfp-section-main', '#gfp-fonts-search-wrap', '#gfp-cache-notice']
+function setFontContainerHeight () { // set font container height according to the current environment
+  var ids = ['#gfp-section-settings', '#gfp-section-main', '#gfp-fonts-search-wrap', '#gfp-cache-notice'] // use this element height as offset
   var offset = 0
   ids.forEach(function (id) {
-    offset += getHeight(id)
+    offset += getHeight(id) // get every element height in array and add to offset
   })
-  var totalHeight = jQuery(window).height()
-  var height = totalHeight - offset
-  jQuery(containerId).height(height)
+  var totalHeight = jQuery(window).height() // viewport height
+  var height = totalHeight - offset // calculate height for container
+  container.height(height) // apply height to font container
 }
 
 function bindOnWindowResize () {
+  // adjust the font container height , on viewport resize
+  // use debounce to limit the execution rate
   jQuery(window).resize(debounce(setFontContainerHeight, 250))
 }
+// #END-REGION font container height setup
 
-function bindOnFontClick () {
-  var cssSelectorsEl = jQuery('#gfp-css-selectors')
-  var fontWeightEl = jQuery('#gfp-font-weight')
-  var italicEl = jQuery('#gfp-action-italic')
-  jQuery(containerId).on('click', '>div.gfp-font-family', function () {
-    var fontElement = jQuery(this)
-    var details = {
-      family: fontElement.data('font-family'),
-      url: fontElement.data('font-url'),
-      variant: fontElement.data('font-variant'),
-      cssSelectors: cssSelectorsEl.val() || 'body',
-      fontWeight: fontWeightEl.val() || '400',
-      italic: italicEl.hasClass('gfp-italic-active')
+function bindOnFontClick () { // triggered by user click on font
+  container.on('click', '>div.gfp-font-family', function () { // use on click handler for dynamic event binding
+    var fontElement = jQuery(this) // font element
+    var data = { // gather data to be passed
+      family: fontElement.data('font-family'), // font name
+      url: fontElement.data('font-url'), // font url, to load into page, and export if needed
+      variant: fontElement.data('font-variant'), // supported font variant, if regular is not supported
+      cssSelectors: cssSelectorsEl.val() || 'body', // get css selectors OR use body if not supplied
+      fontWeight: fontWeightEl.val() || '400', // get selected font weight OR supply default 400
+      italic: italicEl.hasClass('gfp-italic-active') // if italic is selected ?
     }
-    previewFonts.onFontClick(details, injectStyles, injectFont)
+    onFontClick(data) // trigger the font click event in preview.js
   })
 }
 
-function injectStyles (html) {
-  // var styleTag = jQuery('style#gfp-font-style')
-  // if (styleTag.length) {
-  //   styleTag.replaceWith(html)
-  // } else {
-  //   jQuery('head').append(html)
-  // }
-  jQuery('head').append(html)
+export function injectStyles (html) { // inject css into head tag
+  var styleTag = jQuery('style#gfp-font-style')
+  if (styleTag.length) { // check if already has css appended
+    styleTag.replaceWith(html) // replace with existing
+  } else {
+    jQuery('head').append(html) // append to head, if not exists
+  }
 }
 
-function injectFont (data) {
-}
-
-function bindOnItalicClick () {
+function bindOnItalicClick () { // toggle italic button
   var italicEl = jQuery('#gfp-action-italic')
   italicEl.click(() => {
     italicEl.toggleClass('gfp-italic-active')
   })
 }
 
-module.exports = {
-  appendFonts: appendFonts,
-  injectFontPreview: injectFontPreview,
-  updateCacheStatus: updateCacheStatus,
-  hideProgress: hideProgress,
-  bindSearchEvent: bindSearchEvent,
-  showProgress: showProgress
+// #REGION cache-progress
+function updateCacheProgress (progress) { // update the cache progress
+  var html = `<span id="gfp-font-progress-success">${progress.successFonts}</span> 
+              success and <span id="gfp-font-progress-error">${progress.errorFonts}</span>
+              failed Out of ${progress.totalFonts}`
+  jQuery('#gfp-font-progress').html(html) // update the progress in page
 }
+
+function hideCacheProgress () { // hide the cache progress when the caching process is complted
+  jQuery('#gfp-cache-notice').slideUp()
+  setTimeout(setFontContainerHeight, 500) // trigger the container height adjust after delay
+}
+
+function showCacheProgress () {
+  jQuery('#gfp-cache-notice').slideDown()
+  setTimeout(setFontContainerHeight, 500) // trigger the container height adjust after delay
+}
+
+export const cacheProgress = { // export cache progress bar api
+  hide: hideCacheProgress,
+  show: showCacheProgress,
+  update: updateCacheProgress
+}
+
+// #END_REGION cache-progress

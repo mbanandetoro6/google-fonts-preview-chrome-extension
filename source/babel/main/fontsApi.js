@@ -1,92 +1,80 @@
-/* global chrome */
-var Dom = require('./dom.js')
-var FontsStore = require('./fontsStore.js')
-const WebFontLoader = require('webfontloader')
+import * as Dom from './dom.js' // dom manipulations
+const WebFontLoader = require('webfontloader') // load fonts from web and provides a callback events
 
-var injectFontIntoPage = (data) => {
+var allFonts = [] // local variable for fonts, will be used by search functionality in dom.js
+
+export function getFonts () { // this will return all fonts array
+  return allFonts
+}
+
+export function injectFontIntoPage (data) { // this will inject the provided font into page,used when user clicks on the font family, to preview the font inside page
   return new Promise((resolve, reject) => {
-    WebFontLoader.load({
-      classes: false,
+    WebFontLoader.load({ // use web font loader to load the font
+      classes: false, // dont apply any event classes to html
       custom: {
-        families: [data.family],
-        urls: [data.url]
+        families: [data.family], // font name
+        urls: [data.url] // font url
       },
-      fontactive: function (font, fwd) {
-        resolve(font)
+      active: function (font, fvd) {
+        resolve(font) // on success event
       },
-      fontinactive: function (font) {
-        reject(font)
+      inactive: function (font, fvd) {
+        reject(font) // on error event
       }
     })
   })
 }
 
-var loadFontsFromExtension = () => {
-  getFonts().then((fonts) => {
-    FontsStore.storeFonts(fonts)
-    Dom.appendFonts(fonts)
-    Dom.bindSearchEvent()
-    loadPreview(fonts)
-  }
-    // , (error) => {
-    // window.alert(error.message)
-    // }
-  )
+export function loadFontsFromExtension () { // load fonts using the extension background page
+  getFontsFromExtension() // try to get fonts
+    .then((fonts) => { // on success
+      allFonts = fonts // save into local variable
+      Dom.appendFonts(fonts) // append fonts into page, with or without cache
+      loadPreview(fonts) // load font preview , if there is any font without preview image
+    }, (error) => { // on error
+      window.alert(error.message) // alert the user
+    })
 }
 
-var getFonts = () => {
+function getFontsFromExtension () { // this will call the background script of extension
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({
+    chrome.runtime.sendMessage({ // use chrome message api to request the fonts from extension
       request: 'fonts'
-    }, function (response) {
-      console.log(response)
-      if (response.status && response.status === 'success') {
-        resolve(response.fonts)
-      } else if (response.status && response.status === 'error') {
-        reject(new Error(response.message))
+    }, function (response) { // on message response callback
+      if (response.status && response.status === 'success') { // if success
+        resolve(response.fonts) // return with fonts
+      } else if (response.status && response.status === 'error') { // if error
+        reject(new Error(response.message)) // return with error
       }
     })
   })
 }
 
-var loadPreview = (fonts) => {
-  var fontsWithoutPreview = fonts.filter((font) => font.base64Url === undefined)
-  if (fontsWithoutPreview.length) {
-    Dom.showProgress()
-    var port = chrome.runtime.connect({
-      name: 'fontPreview'
-    })
-    port.postMessage({
-      request: 'fontPreview',
-      fontsWithoutPreview: fontsWithoutPreview
-    })
-    port.onMessage.addListener((response) => {
-      if (response.status === 'success') {
-        onSuccess(response)
-      } else if (response.status === 'error') {
-        onError(response)
+function loadPreview (fonts) { // load preview
+  var fontsWithoutPreview = fonts.filter((font) => font.base64Url === undefined) // select the fonts, which have no preview
+  if (fontsWithoutPreview.length) { // if any fonts found without preview
+    Dom.cacheProgress.show() // enable cache progress
+    var port = chrome.runtime.connect({ name: 'fontPreview' }) // open the messaging channel to extension
+    port.postMessage({ request: 'fontPreview', fontsWithoutPreview: fontsWithoutPreview }) // request for preview to the extension, and provide the fonts to process
+    port.onMessage.addListener((response) => { // on return message handler
+      if (response.status === 'success') { // if is success
+        onSuccess(response) // call the success handler with response
+      } else if (response.status === 'error') { // on error
+        onError(response) // call the error handler with response
       }
-      if (response.progress.isCompleted === true) {
-        console.log('complete')
-        Dom.hideProgress()
+      if (response.progress.isCompleted === true) { // check if the loading preview process is completed
+        console.log('Font Preview Caching Process Completed')
+        Dom.cacheProgress.hide() // hide the cache progress
       }
     })
-  } else {
-    Dom.hideProgress()
   }
 }
 
-var onSuccess = (response) => {
-  Dom.injectFontPreview(response.font)
-  FontsStore.mergePreviews([response.font])
-  Dom.updateCacheStatus(response.progress)
+function onSuccess (response) { // on font preview cache success
+  Dom.injectFontPreview(response.font) // inject the preview in Page
+  Dom.cacheProgress.update(response.progress) // update the cache progress
 }
 
-var onError = (response) => {
-  Dom.updateCacheStatus(response.progress)
-}
-
-module.exports = {
-  loadFonts: loadFontsFromExtension,
-  injectFontIntoPage: injectFontIntoPage
+var onError = (response) => { // on font preview error
+  Dom.cacheProgress.update(response.progress) // update the cache progress
 }

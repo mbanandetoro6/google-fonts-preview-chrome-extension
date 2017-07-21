@@ -1,12 +1,11 @@
-import { getFonts as getFontsCache, setFonts as saveFontsCache } from './../common/storage.js'
-const util = require('./../common/util.js') // common functions mostly ajax
+import { getFonts as getFontsCache, setFonts as saveFontsCache } from './../common/storage.js' // storage api sto store and retrieve font cache
+import { jsonWebRequest } from './../common/util.js' // common functions to use http calls
 const WebFontLoader = require('webfontloader') // font loader to load fonts and get callback
-// const storage = require('./../common/storage.js') // store and retrieve font cache
 
 const fontUrlBase = 'https://fonts.googleapis.com/css?family=' // url used to build font url for google font family
 // const apiUrl = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&fields=items(category%2Cfamily%2ClastModified%2Csubsets%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E'
-// const apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing // [TODO][REMOVE] this in production
-const apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // limited fonts for local testing purpose // [TODO][REMOVE] this in production
+const apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing // [TODO][REMOVE] this in production
+// const apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // limited fonts for local testing purpose // [TODO][REMOVE] this in production
 
 var fonts = [] // initialize with empty array, to be filled later by api
 
@@ -17,7 +16,7 @@ export function getFonts () { // exported function to be used to get fonts
       return
     }
     // if not available in local variable
-    util.jsonWebRequest(apiUrl) // request the google fonts api
+    jsonWebRequest(apiUrl) // request the google fonts api
       .then((response) => { // on success
         buildFonts(response.items) // generate custom properties for each font
         mergeCache() // merge with cache
