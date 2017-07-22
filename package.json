@@ -11,7 +11,9 @@
     "build": "cross-env NODE_ENV=production gulp build"
   },
   "standard": {
-    "globals": ["chrome"]
+    "globals": [
+      "chrome"
+    ]
   },
   "repository": {
     "type": "git",

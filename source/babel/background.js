@@ -1,3 +1,8 @@
+/**
+ * @author Maulik Anand
+ * @email mbanandetoro6@gmail.com
+ * @desc  background script for extension
+*/
 import * as FontsApi from './background/fonts_background.js'
 
 // Called when the user clicks on the browser action.

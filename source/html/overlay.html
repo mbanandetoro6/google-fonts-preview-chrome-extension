@@ -13,10 +13,10 @@
             <a href="#" id="gfp-action-settings" style="cursor:not-allowed" title="Slide Down Settings">
                 <i class="fa fa-cog"></i>
             </a>
-            <a href="#" id="gfp-action-apply" style="cursor:not-allowed" title="Apply Changes To Page">
+            <a href="#" id="gfp-action-apply" title="Apply Changes To Page">
                 <i class="fa fa-flask"></i>
             </a>
-            <select id="gfp-font-weight" class="gfp-input" title="Select Font Weight To Be Applied, default is 400" >
+            <select id="gfp-font-weight" class="gfp-input" title="Select Font Weight To Be Applied, default is 400">
                 <option value="400" selected disabled>Weight</option>
                 <option value="100">100</option>
                 <option value="200">200</option>
@@ -35,7 +35,10 @@
                 <i class="fa fa-history"></i>
             </a>
         </div>
-        <textarea id="gfp-css-selectors" title="Css selectors comma seprated , just like regular css" placeholder="Css selectors comma seprated , defaults is *" class="gfp-input"></textarea>
+        <div class="gfp-css-selectors-wrap ">
+            <textarea id="gfp-css-selectors" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="Css selector comma seprated , just like regular css" placeholder="Css selector, * is default || shorthHand command , click help to learn shorthHand"
+                class="gfp-input"></textarea>
+        </div>
     </section>
     <section id="gfp-section-fonts">
         <div id="gfp-fonts-search-wrap">

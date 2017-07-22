@@ -7,13 +7,13 @@ export function getFonts () { // this will return all fonts array
   return allFonts
 }
 
-export function injectFontIntoPage (data) { // this will inject the provided font into page,used when user clicks on the font family, to preview the font inside page
+export function injectFontIntoPage (fontFamily, fontUrl) { // this will inject the provided font into page,used when user clicks on the font family, to preview the font inside page
   return new Promise((resolve, reject) => {
     WebFontLoader.load({ // use web font loader to load the font
       classes: false, // dont apply any event classes to html
       custom: {
-        families: [data.family], // font name
-        urls: [data.url] // font url
+        families: [fontFamily], // font name
+        urls: [fontUrl] // font url
       },
       active: function (font, fvd) {
         resolve(font) // on success event

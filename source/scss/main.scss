@@ -1,3 +1,9 @@
+/**
+ * @author Maulik Anand
+ * @email mbanandetoro6@gmail.com
+ * @desc  styles for chrome font preview extension
+*/
+
 @import '_variables.scss';
 body {
     margin: 0; // &.gfp-active {
@@ -23,7 +29,7 @@ body {
     box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
     transition: left $duration $easeInOutSine;
     border-radius: 0 $radius $radius 0;
-    z-index:$z-index - 1 !important;
+    z-index: $z-index - 1 !important;
     i {
         font-size: 14px!important;
         line-height: 40px!important;
@@ -54,13 +60,13 @@ body {
     }
     &,
     * {
-        &,&:after,&:before{
+        &,
+        &:after,
+        &:before {
             box-sizing: border-box;
         }
-        
         font-family: $fontFamily!important;
     }
-    
     font-size: 14px!important;
     position: fixed;
     top: 0;
@@ -210,18 +216,36 @@ body {
         border: none;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         transition: box-shadow $duration $easeInOutBack;
-        font-family: $fontFamily;
+        font-family: $codeFontFamily!important;
         &:hover,
         &:focus {
             box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
             outline: none;
         }
     }
+    .gfp-css-selectors-wrap {
+        position: relative;
+        overflow: hidden;
+        &.gfp-css-selectors-loading::after {
+            position: absolute;
+            display: block;
+            content: "";
+            right: 10px;
+            bottom: 10px;
+            height: 20px;
+            width: 20px;
+            border: 2px solid $primary-color;
+            border-radius: 50%;
+            border-color: transparent $primary-color transparent $primary-color;
+            animation: gfp-loader $duration*7 $easeInOutBack 0s infinite normal forwards;
+        }
+    }
     #gfp-css-selectors {
         resize: vertical!important;
         max-height: 200px!important;
         min-height: 40px!important;
-        height: 80px;
+        height: 100px;
+        font-size: 12px!important;
     }
     #gfp-fonts-search-wrap {
         padding: $spacing;
@@ -263,18 +287,18 @@ body {
             opacity: 1;
             visibility: visible;
         }
-        &.gfp-font-family-applying::after{
+        &.gfp-font-family-applying::after {
             content: "";
             display: block;
             position: absolute;
-            top:10px;
+            top: 10px;
             right: 10px;
             height: 20px;
             width: 20px;
-            border:2px solid $primary-color;
-            border-color:transparent $primary-color transparent $primary-color;
+            border: 2px solid $primary-color;
+            border-color: transparent $primary-color transparent $primary-color;
             animation: gfp-loader $duration*7 $easeInOutBack 0s infinite normal forwards;
-            border-radius:50%;
+            border-radius: 50%;
         }
         .gfp-font-family-preview {
             // margin-right: 40px;
@@ -294,8 +318,7 @@ body {
             .gfp-font-family-preview {
                 color: $error-color;
             }
-        }
-        // .gfp-font-family-action {
+        } // .gfp-font-family-action {
         //     position: absolute;
         //     display: block;
         //     padding: 0;
@@ -368,7 +391,7 @@ body {
         transform: rotate(0) scale(1);
         opacity: 1;
     }
-    50%{
+    50% {
         transform: rotate(180deg) scale(0.8);
         opacity: 0.8;
     }

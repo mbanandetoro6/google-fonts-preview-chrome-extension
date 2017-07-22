@@ -91,11 +91,12 @@ function loadFontFamilyForPreview (font) { // web font loader to load font famil
 
 export function getFontsPreviewImages (fontsToProcess, onProgressCallback) { // generate a preview for provided fonts
   // canvas settings, and scale variable to easily change values
-  var scale = 1
+  var scale = 2
   var settings = {
+    scale: scale,
     fontSize: 18 * scale,
     height: 40 * scale,
-    width: 320 * scale
+    width: 350 * scale
   }
   var canvas = document.createElement('canvas') // canvas element to be used to render fonts preview , use one canvas element for all fonts, to improve performance
   var successFonts = [] // gather all success fonts
@@ -167,7 +168,7 @@ function generateFontPreview (font, canvas, settings) { // this function will ge
         context.textBaseline = 'middle' // vertical alignment from the point of starting
         context.webkitImageSmoothingEnabled = false // enable this if found any font blurring issue on resize
         context.imageSmoothingEnabled = false
-        context.fillText(loadedFont.family, 10, settings.height / 2) // draw text on canvas
+        context.fillText(loadedFont.family, 10 * settings.scale, settings.height / 2) // draw text on canvas
         var dataUrl = canvas.toDataURL('image/jpeg', 1) // export to data url, we are using jpeg to pass quality value to 100%, png defaults to only 92%
         document.querySelector(`head link[href="${loadedFont.previewUrl}"]`)
           .remove() // remove the appended font link from the head

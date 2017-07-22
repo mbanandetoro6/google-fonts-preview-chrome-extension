@@ -30,7 +30,7 @@ function loadFontsAndFontIcons () { // load fonts for text and also font icons
   return new Promise((resolve, reject) => {
     WebFont.load({ // use web font loader to load fonts and font icons
       google: {
-        families: ['Roboto:400,700'] // load google font family for page
+        families: ['Roboto:400', 'Space Mono'] // load google font family for page
       },
       custom: {
         families: ['FontAwesome'], // load font awesome (icons)

@@ -1,3 +1,9 @@
+/**
+ * @author Maulik Anand
+ * @email mbanandetoro6@gmail.com
+ * @desc  main script for extension
+*/
+
 'use strict'
 import { init as Initialize } from './main/init.js'
 import { loadFontsFromExtension as loadFonts } from './main/fontsApi.js'
