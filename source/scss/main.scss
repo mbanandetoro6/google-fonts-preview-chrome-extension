@@ -23,6 +23,7 @@ body {
     box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
     transition: left $duration $easeInOutSine;
     border-radius: 0 $radius $radius 0;
+    z-index:$z-index - 1 !important;
     i {
         font-size: 14px!important;
         line-height: 40px!important;
@@ -285,8 +286,8 @@ body {
             overflow: hidden;
             img {
                 image-rendering: -webkit-optimize-contrast;
-                max-width: 660px;
-                width: 330px;
+                max-width: 640px;
+                width: $width - 30px;
             }
         }
         &.gfp-font-family-loading-error {

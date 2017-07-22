@@ -17,7 +17,7 @@ var fuseOptions = { // font search options
   maxPatternLength: 16,
   minMatchCharLength: 1,
   keys: [ // which object properties to search on
-    'family'
+    'variants', 'family'
   ]
 }
 var fuse // fuse.js object ,for search functionality, will be assigned in init function

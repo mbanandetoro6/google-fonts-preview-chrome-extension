@@ -7,7 +7,7 @@ export function onFontClick (data) {
     var rule = `${data.cssSelectors}{
                   font-family:'${data.family}'!important;
                   font-weight:${data.fontWeight}!important;
-                  ${data.italic ? 'fonts-style:italic!important;' : ''}
+                  ${data.italic ? 'font-style:italic!important;' : ''}
                 }`
 
     injectFontIntoPage(data).then(() => {

@@ -2,8 +2,9 @@ import { getFonts as getFontsCache, setFonts as saveFontsCache } from './../comm
 import { jsonWebRequest } from './../common/util.js' // common functions to use http calls
 const WebFontLoader = require('webfontloader') // font loader to load fonts and get callback
 
+var fontSorting = 'alpha'
 const fontUrlBase = 'https://fonts.googleapis.com/css?family=' // url used to build font url for google font family
-const apiUrl = 'https://www.googleapis.com/webfonts/v1/webfonts?sort=alpha&fields=items(category%2Cfamily%2ClastModified%2Csubsets%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E'
+const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?sort=${fontSorting}&fields=items(category%2Cfamily%2ClastModified%2Csubsets%2Cvariants)&key=AIzaSyBg1SCUmPcujiFq9gerb9rrozsLfjBTO8E`
 // const apiUrl = 'http://cdn.localhost.com/temp/google-fonts.json' // temp for local testing // [TODO][REMOVE] this in production
 // const apiUrl = 'http://cdn.localhost.com/temp/fonts-limited.json' // limited fonts for local testing purpose // [TODO][REMOVE] this in production
 
@@ -90,11 +91,11 @@ function loadFontFamilyForPreview (font) { // web font loader to load font famil
 
 export function getFontsPreviewImages (fontsToProcess, onProgressCallback) { // generate a preview for provided fonts
   // canvas settings, and scale variable to easily change values
-  var scale = 2
+  var scale = 1
   var settings = {
     fontSize: 18 * scale,
     height: 40 * scale,
-    width: 330 * scale
+    width: 320 * scale
   }
   var canvas = document.createElement('canvas') // canvas element to be used to render fonts preview , use one canvas element for all fonts, to improve performance
   var successFonts = [] // gather all success fonts
@@ -164,9 +165,9 @@ function generateFontPreview (font, canvas, settings) { // this function will ge
         context.font = `${settings.fontSize}px '${loadedFont.family}'` // provide font size and font family to canvas
         context.textAlign = 'left' // horizontal text align from the point of starting
         context.textBaseline = 'middle' // vertical alignment from the point of starting
-        // context.webkitImageSmoothingEnabled = false // enable this if found any font blurring issue on resize
-        // context.imageSmoothingEnabled = false
-        context.fillText(loadedFont.family, 0, settings.height / 2) // draw text on canvas
+        context.webkitImageSmoothingEnabled = false // enable this if found any font blurring issue on resize
+        context.imageSmoothingEnabled = false
+        context.fillText(loadedFont.family, 10, settings.height / 2) // draw text on canvas
         var dataUrl = canvas.toDataURL('image/jpeg', 1) // export to data url, we are using jpeg to pass quality value to 100%, png defaults to only 92%
         document.querySelector(`head link[href="${loadedFont.previewUrl}"]`)
           .remove() // remove the appended font link from the head
