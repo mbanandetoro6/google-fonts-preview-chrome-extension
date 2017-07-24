@@ -1,5 +1,6 @@
 import { getFonts } from './fontsApi.js' // used for getting fonts for searching
-import { injectFontAndApply, parseAndApplyStyles } from './preview.js' // used for preview font on page
+import { injectFontAndApply, parseAndApplyStyles, getActiveStyles, resetStyles } from './preview.js' // used for preview font on page
+import { getAdjacentItemFromArray } from './../common/util.js'
 var jQuery = require('jquery') // dom manipulations
 var Fuse = require('fuse.js') // fuzzy search functionality
 const debounce = require('lodash/debounce.js') // debounce search event, to limit the execution rate
@@ -23,6 +24,7 @@ var fuseOptions = { // font search options
   ]
 }
 var fuse // fuse.js object ,for search functionality, will be assigned in init function
+var History = []
 
 function init () { // initialize
   container = jQuery('#gfp-font-families') // save jquery element reference in container
@@ -43,10 +45,10 @@ function init () { // initialize
   injectEmptyStyleTag()
   bindClearStyleClickEvent()
   bindApplyBtnClick()
-  bindCtrlEnterOnTextArea()
+  bindKeydownOnTextArea()
   bindOnCssShortcutSelectorsClick()
   jQuery('#gfp-action-settings').attr('href', chrome.runtime.getURL('html/help.html'))
-  body.addClass('gfp-extension-visible')
+  bindCssSelectorsKeyup()
 }
 
 export function injectFontPreview (font) { // this will be used to inject preview, after the font is appended in page
@@ -169,7 +171,7 @@ function bindOnFontClick () { // triggered by user click on font
       weight: fontWeightEl.val() || '400', // get selected font weight OR supply default 400
       style: italicEl.hasClass('gfp-italic-active') ? 'italic' : 'normal' // if italic is selected ?
     }
-    console.log(cssSelectorsEl.val())
+    History.push(cssSelectorsEl.val())
     injectFontAndApply(rule) // trigger the font click event in preview.js
       .then(() => {
         fontElement.removeClass('gfp-font-family-applying')
@@ -194,6 +196,13 @@ export function injectStyles (rule) { // inject css into head tag
 
 function clearInjectedStyles () {
   jQuery('style#gfp-font-styles').empty()
+  var activeStyles = getActiveStyles()
+  console.log(activeStyles)
+  activeStyles.forEach((style) => {
+    console.log(style)
+    jQuery('head').find(`link[href="${style.rule.url}"]`).remove()
+  })
+  resetStyles()
 }
 
 function bindClearStyleClickEvent () {
@@ -204,25 +213,35 @@ function bindClearStyleClickEvent () {
 }
 
 function bindApplyBtnClick () {
-  jQuery('#gfp-action-apply').click(() => {
+  jQuery('#gfp-command-apply').click(() => {
     applyCssCommand()
     return false
   })
 }
 
-function bindCtrlEnterOnTextArea () {
+function bindKeydownOnTextArea () {
   cssSelectorsEl.keydown(function (e) {
-    if ((e.ctrlKey || e.metaKey) && e.keyCode === 13) {
-      applyCssCommand()
+    if (e.ctrlKey || e.metaKey) {
+      if (e.keyCode === 13) { // 13 is enter key
+        console.log('ctrl/cmd + enter')
+        applyCssCommand()
+      } else if (e.keyCode === 39) { // 39 is right arrow
+        cssSelectorsEl.val(getAdjacentItemFromArray(History, cssSelectorsEl.val(), false))
+        console.log('ctrl/cmd + right-arrow')
+      } else if (e.keyCode === 37) { // 37 is left arrow
+        console.log('ctrl/cmd + left-arrow')
+        cssSelectorsEl.val(getAdjacentItemFromArray(History, cssSelectorsEl.val(), true))
+      }
     }
   })
 }
 
 function applyCssCommand () {
   var css = cssSelectorsEl.val()
-  cssSelectorWrapEl.css('outline', '1px red').addClass('hello gfp-css-selectors-loading')
+  cssSelectorWrapEl.css('outline', '1px red').addClass('gfp-command-applying')
+  History.push(css)
   parseAndApplyStyles(css)
-    .then(() => cssSelectorWrapEl.removeClass('gfp-css-selectors-loading'))
+    .then(() => cssSelectorWrapEl.removeClass('gfp-command-applying'))
     .catch(() => console.log('error'))
 }
 
@@ -244,6 +263,18 @@ function bindOnItalicClick () { // toggle italic button
     italicEl.toggleClass('gfp-italic-active')
     return false
   })
+}
+
+function bindCssSelectorsKeyup () {
+  var cssCommandApplyBtn = jQuery('#gfp-command-apply')
+  cssSelectorsEl.keyup(debounce(() => {
+    // console.log(cssSelectorsEl.val().includes('/'))
+    if (cssSelectorsEl.val().includes('/')) {
+      cssCommandApplyBtn.addClass('gfp-command-available')
+    } else {
+      cssCommandApplyBtn.removeClass('gfp-command-available')
+    }
+  }, 100))
 }
 
 function bindOnHideShowButton () {
@@ -269,7 +300,7 @@ function updateCacheProgress (progress) { // update the cache progress
   jQuery('#gfp-font-progress').html(html) // update the progress in page
 }
 
-function hideCacheProgress () { // hide the cache progress when the caching process is complted
+function hideCacheProgress () { // hide the cache progress when the caching process is completed
   jQuery('#gfp-cache-notice').slideUp()
   setTimeout(setFontContainerHeight, 500) // trigger the container height adjust after delay
 }

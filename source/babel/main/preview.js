@@ -10,11 +10,17 @@ export function injectFontAndApply (rule) {
                 }`
     injectFontIntoPage(rule.family, rule.url)
       .then(() => {
-        styles.push({ rule: css })
+        styles.push({ css: css, rule: rule })
         injectStyles(css)
         resolve()
       }).catch(reject)
   })
+}
+export function getActiveStyles () {
+  return styles
+}
+export function resetStyles () {
+  styles = []
 }
 
 export function parseAndApplyStyles (command) {
@@ -50,10 +56,10 @@ function parseShorthand (command) {
     .replace(/\n/g, '')
     .split(';')
     .filter(rule => {
-      return rule.trim().includes('|')
+      return rule.trim().includes('/')
     })
   rules = rules.map(item => {
-    var rule = item.trim().split('|')
+    var rule = item.trim().split('/')
     var selector = rule[0].trim()
     var object = {
       selector: selector === 'h1-6' ? 'h1,h2,h3,h4,h5,h6' : selector,

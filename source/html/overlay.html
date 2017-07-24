@@ -5,38 +5,45 @@
     <div id="gfp-loader">
         <div id="gfp-loader-inner"></div>
     </div>
-    <section id="gfp-section-settings">
-        <input type="checkbox" name="" id=""> Use Random Theme
+    <section id="gfp-section-export">
+
     </section>
 
     <section id="gfp-section-main">
 
         <div id="gfp-actions" class="gfp-clearfix">
-            <a href="#" target="_blank" id="gfp-action-settings" title="Slide Down Settings">
-                <i class="fa fa-question-circle"></i>
-            </a>
-            <a href="#" id="gfp-action-reset" title="Reset Fonts For Page">
-                <i class="fa fa-history"></i>
-            </a>
-            <a href="#" id="gfp-action-apply" title="Apply Changes To Page">
-                <i class="fa fa-flask"></i>
-            </a>
-            <select id="gfp-font-weight" class="gfp-input" title="Select Font Weight To Be Applied, default is 400">
-                <option value="400" selected disabled>Weight</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-                <option value="300">300</option>
-                <option value="400">400</option>
-                <option value="500">500</option>
-                <option value="600">600</option>
-                <option value="700">700</option>
-                <option value="800">800</option>
-                <option value="900">900</option>
-            </select>
-            <a href="#" id="gfp-action-italic" title="Italic/Normal Click To Toggle">
-                <i class="fa fa-italic"></i>
-            </a>
+            <div class="gfp-btn-group gfp-float-left  gfp-clearfix">
+                <a href="#" id="gfp-action-help" class="gfp-btn gfp-icon-btn" target="_blank" title="Open Help">
+                    <i class="fa fa-question-circle"></i>
+                </a>
+                <a href="#" id="gfp-action-export" class="gfp-btn gfp-icon-btn" title="Export Wizard">
+                    <i class="fa fa-cloud-download"></i>
+                </a>
 
+            </div>
+            <div class=" gfp-float-left  gfp-clearfix">
+                <a href="#" id="gfp-action-reset" class="gfp-btn gfp-icon-btn" title="Reset Fonts For Page">
+                    <i class="fa fa-history"></i>
+                </a>
+
+            </div>
+            <div class="gfp-btn-group gfp-float-right gfp-clearfix">
+                <a href="#" id="gfp-action-italic" class="gfp-btn gfp-icon-btn" title="Italic/Normal Click To Toggle">
+                    <i class="fa fa-italic"></i>
+                </a>
+                <select id="gfp-font-weight" class="gfp-input gfp-btn" title="Select Font Weight To Be Applied, default is 400">
+                    <option value="400" selected disabled>Weight</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                    <option value="500">500</option>
+                    <option value="600">600</option>
+                    <option value="700">700</option>
+                    <option value="800">800</option>
+                    <option value="900">900</option>
+                </select>
+            </div>
         </div>
 
         <div id="gfp-css-selector-shortcuts" class=" gfp-clearfix">
@@ -50,6 +57,9 @@
         <div class="gfp-css-selectors-wrap ">
             <textarea id="gfp-css-selectors" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="Css selector comma seprated , just like regular css" placeholder="write css selector, * is default OR use shorthHand commands , click help to learn more"
                 class="gfp-input"></textarea>
+            <a href="#" id="gfp-command-apply" class="gfp-btn gfp-icon-btn" title="Apply Command">
+                <i class="fa fa-flask"></i>
+            </a>
         </div>
     </section>
     <section id="gfp-section-fonts">

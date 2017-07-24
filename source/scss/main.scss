@@ -41,8 +41,7 @@ body {
     body.gfp-extension-visible & {
         left: $width !important;
         opacity: 0;
-        
-         i {
+        i {
             transform: rotate(0)
         }
     }
@@ -131,7 +130,7 @@ body {
             top: 10px;
         }
     }
-    #gfp-section-settings {
+    #gfp-section-export {
         display: none;
         background: darken($primary-color, 8);
         padding: $spacing;
@@ -156,75 +155,6 @@ body {
             }
         }
     }
-    #gfp-actions {
-        margin-bottom: $spacing/2;
-        a {
-            display: block;
-            padding: 0;
-            background: white;
-            height: 40px;
-            border-radius: $radius;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
-            transition: $duration/2 $easeInOutSine;
-            &:hover {
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, .4);
-            }
-            &:active {
-                box-shadow: none;
-            }
-            &,
-            i {
-                line-height: 40px!important;
-            }
-        }
-        #gfp-action-settings,
-        #gfp-action-reset {
-            float: left;
-            color: $dark-text-color;
-        }
-        #gfp-action-settings,
-        #gfp-action-reset,
-        #gfp-action-apply,
-        #gfp-action-italic {
-            width: 40px;
-            text-align: center;
-            font-size: 22px;
-        }
-        #gfp-action-settings {
-            margin-right: 10px;
-        }
-        #gfp-action-reset {
-            color: $accent-color;
-        }
-        #gfp-action-apply {
-            float: right;
-            color: $dark-primary-color;
-        }
-        #gfp-action-italic {
-            float: right;
-            margin-right: $spacing/2;
-            opacity: 0.4;
-            &.gfp-italic-active {
-                opacity: 1;
-                color: $dark-primary-color;
-            }
-        }
-        #gfp-font-weight {
-            width: auto;
-            float: right;
-            line-height: 40px;
-            height: 40px;
-            padding: 0 $spacing/2;
-            margin-right: $spacing/2;
-        }
-    }
-    .gfp-clearfix {
-        &::after {
-            clear: both;
-            content: "";
-            display: table;
-        }
-    }
     .gfp-input {
         display: block;
         width: 100%;
@@ -241,21 +171,193 @@ body {
             outline: none;
         }
     }
+    .gfp-float-left {
+        float: left;
+    }
+    .gfp-float-right {
+        float: right;
+    }
+    .gfp-btn {
+        display: inline-block;
+        height: 40px;
+        background: white;
+        border-radius: $radius;
+        padding: 10px;
+        line-height: 40px!important;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
+        transition-duration: $duration;
+        &.gfp-icon-btn {
+            padding: 0;
+            margin: 0;
+            width: 40px;
+            text-align: center;
+            i {
+                line-height: 40px!important;
+                font-size: 18px!important;
+            }
+        }
+        &:hover {
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, .4);
+        }
+        &:active {
+            box-shadow: none;
+        }
+    }
+    #gfp-action-help {
+        color: $info-color;
+    }
+    #gfp-action-export {
+        color: $success-color;
+    }
+    #gfp-action-reset {
+        color: $error-color;
+    }
+    #gfp-action-apply {
+        color: $primary-color;
+    }
+    #gfp-action-italic {
+        opacity: 0.4;
+        &.gfp-italic-active {
+            opacity: 1;
+            color: $primary-color;
+        }
+    }
+    .gfp-btn-group {
+        margin-right: 10px;
+        &:last-child {
+            margin-right: 0
+        }
+        .gfp-btn {
+            float: left;
+            display: block;
+            border-radius: 0;
+            border-right: 1px solid $seprator-color;
+            &:last-child {
+                border-radius: 0 $radius $radius 0;
+                border-right: none;
+            }
+            &:first-child {
+                border-radius: $radius 0 0 $radius;
+            }
+            &.gfp-input {
+                width: auto;
+            }
+        }
+    }
+    #gfp-actions {
+        margin-bottom: $spacing/2; // a {
+        //     display: block;
+        //     padding: 0;
+        //     background: white;
+        //     height: 40px;
+        //     border-radius: $radius;
+        //     box-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
+        //     transition: $duration/2 $easeInOutSine;
+        //     &:hover {
+        //         box-shadow: 0px 4px 10px rgba(0, 0, 0, .4);
+        //     }
+        //     &:active {
+        //         box-shadow: none;
+        //     }
+        //     &,
+        //     i {
+        //         line-height: 40px!important;
+        //     }
+        // }
+        // #gfp-action-settings,
+        // #gfp-action-reset {
+        //     float: left;
+        //     color: $dark-text-color;
+        // }
+        // #gfp-action-settings,
+        // #gfp-action-reset,
+        // #gfp-action-apply,
+        // #gfp-action-italic {
+        //     width: 40px;
+        //     text-align: center;
+        //     font-size: 22px;
+        // }
+        // #gfp-action-settings {
+        //     margin-right: 10px;
+        // }
+        // #gfp-action-reset {
+        //     color: $accent-color;
+        // }
+        // #gfp-action-apply {
+        //     float: right;
+        //     color: $dark-primary-color;
+        // }
+        // #gfp-action-italic {
+        //     float: right;
+        //     margin-right: $spacing/2;
+        //     opacity: 0.4;
+        //     &.gfp-italic-active {
+        //         opacity: 1;
+        //         color: $dark-primary-color;
+        //     }
+        // }
+        // #gfp-font-weight {
+        //     width: auto;
+        //     float: right;
+        //     line-height: 40px;
+        //     height: 40px;
+        //     padding: 0 $spacing/2;
+        //     margin-right: $spacing/2;
+        // }
+    }
+    .gfp-clearfix {
+        &::after {
+            clear: both;
+            content: "";
+            display: table;
+        }
+    }
     .gfp-css-selectors-wrap {
         position: relative;
-        &.gfp-css-selectors-loading::after {
+        $size: 25px;
+        $size2: 40px;
+        $offset: 10px;
+        #gfp-command-apply {
+            position: absolute;
+            bottom: (($size2 - $size) / 2)+ $offset;
+            right: (($size2 - $size) / 2) + $offset;
+            border-radius: 50%;
+            color: white;
+            background-color: $primary-color;
+            line-height: $size!important;
+            height: $size;
+            width: $size;
+            text-align: center;
+            display: block;
+            i {
+                line-height: $size!important;
+                font-size: 11px!important;
+            }
+            opacity: 0;
+            transform: translateY(50%);
+            visibility: hidden;
+            &.gfp-command-available{
+                opacity: 1;
+                transform: translateY(0);
+                visibility: visible;
+            }
+        }
+        &.gfp-command-applying::after {
             position: absolute;
             display: block;
             content: "";
-            right: 10px;
-            bottom: 10px;
-            height: 20px;
-            width: 20px;
-            border: 2px solid $primary-color;
+            right: $offset;
+            bottom: $offset;
+            height: $size2;
+            width: $size2;
+            border: 1px solid $primary-color;
             border-radius: 50%;
             border-color: transparent $primary-color transparent $primary-color;
-            animation: gfp-loader $duration*7 $easeInOutBack 0s infinite normal forwards;
+            animation: gfp-command-apply $duration*7 $easeInOutBack 0s infinite normal forwards;
         }
+    }
+    #gfp-font-weight {
+        font-size: 13px!important;
     }
     #gfp-css-selectors {
         resize: vertical!important;
@@ -425,5 +527,14 @@ body {
     to {
         transform: rotate(360deg) scale(1);
         opacity: 1;
+    }
+}
+
+@keyframes gfp-command-apply {
+    from {
+        transform: rotate(0)
+    }
+    to {
+        transform: rotate(360deg)
     }
 }
