@@ -23,7 +23,7 @@ gulp.task('default', gulp.task('watch'))
 function scss () {
   return gulp.src('./source/scss/*.scss')
     .pipe(plumber())
-    .pipe(gulpScss().on('error', gulpScss.logError))
+    .pipe(gulpScss({outputStyle: 'expanded'}).on('error', gulpScss.logError))
     .pipe(gulpIf(isProduction, cleanCss()))
     .pipe(gulp.dest('./source/css/'))
 }
