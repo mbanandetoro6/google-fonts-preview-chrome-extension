@@ -6,30 +6,29 @@
 
 @import '_variables.scss';
 body {
-    margin: 0; // &.gfp-active {
-    //     transition: padding-left $duration $easeInOutSine;
-    //     &.gfp-extension-visible {
-    //         padding-left: $width;
-    //         overflow-x: hidden;
-    //     }
-    // }
+    margin: 0;
+    &.gfp-active {
+        // transition: padding-left $duration $easeInOutSine;
+        // &.gfp-extension-visible {
+        //     padding-left: $width !important;
+        //     overflow-x: hidden;
+        // }
+    }
 }
 
 #google-font-preview-show-hide-trigger {
-    width: 30px!important;
+    width: 30px !important;
     position: fixed;
-    left: $width!important;
-    top: $spacing!important;
+    left: 0 !important;
+    top: $spacing !important;
     height: 40px;
-    background-color: $primary-color!important;
-    opacity: 0;
-    animation: gfp-slide-right $duration forwards;
-    animation-delay: 1s;
-    animation-timing-function: $easeInOutSine;
+    background-color: $primary-color !important;
     box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
     transition: left $duration $easeInOutSine;
     border-radius: 0 $radius $radius 0;
     z-index: $z-index - 1 !important;
+    animation: gfp-slide-right-in $duration*2 forwards $easeInOutSine;
+    animation-delay: 2.5s;
     i {
         font-size: 14px!important;
         line-height: 40px!important;
@@ -39,8 +38,16 @@ body {
         text-align: center!important;
         font-family: 'FontAwesome'!important;
     }
-    &.gfp-extension-hidden {
-        left: 0!important;
+    body.gfp-extension-visible & {
+        left: $width !important;
+        opacity: 0;
+        
+         i {
+            transform: rotate(0)
+        }
+    }
+    body.gfp-extension-hidden & {
+        left: 0 !important;
         i {
             transform: rotate(180deg)
         }
@@ -71,16 +78,23 @@ body {
     position: fixed;
     top: 0;
     bottom: 0;
+    left: 0;
     z-index: $z-index!important;
     width: $width;
     background: $bg-color!important;
     color: $text-color!important;
     box-shadow:10px 10px 12px rgba(0, 0, 0, .3);
     transition: box-shadow $duration,
-    left $duration $easeInOutSine;
-    animation: gfp-slide-right $duration forwards;
-    animation-timing-function:$easeInOutSine;
+    transform $duration $easeInOutSine;
     overflow-y: hidden;
+    body.gfp-extension-visible & {
+        animation: gfp-slide-right-in $duration forwards;
+        animation-timing-function: $easeInOutSine;
+    }
+    body.gfp-extension-hidden & {
+        animation: gfp-slide-right-out $duration forwards;
+        animation-timing-function: $easeInOutSine;
+    }
     &:hover {
         box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
     }
@@ -91,15 +105,9 @@ body {
     .fa {
         line-height: 40px!important;
     }
-    &.gfp-on-left {
-        left: 0;
-        &.gfp-extension-hide {
-            left: - $width;
-        }
-    }
     #gfp-loader {
         background-color: white;
-        position: absolute;
+        position: fixed;
         top: -200px;
         left: 50%;
         margin-left: -25px;
@@ -125,18 +133,28 @@ body {
     }
     #gfp-section-settings {
         display: none;
-        height: 0;
         background: darken($primary-color, 8);
-        &.gfp-settings-active {
-            height: auto;
-            padding: $spacing;
-            display: block;
-        }
+        padding: $spacing;
     }
     #gfp-section-main {
         position: relative;
         padding: $spacing;
         background: $primary-color;
+    }
+    #gfp-css-selector-shortcuts {
+        background: darken(white, 5);
+        border-radius: $radius $radius 0 0;
+        border-bottom: 1px solid darken(white, 15);
+        a {
+            padding: 5px 10px;
+            display: block;
+            float: left;
+            font-size: 12px!important;
+            border-right: 1px solid darken(white, 15);
+            &:hover {
+                background: rgba(0, 0, 0, .1)
+            }
+        }
     }
     #gfp-actions {
         margin-bottom: $spacing/2;
@@ -225,7 +243,6 @@ body {
     }
     .gfp-css-selectors-wrap {
         position: relative;
-        overflow: hidden;
         &.gfp-css-selectors-loading::after {
             position: absolute;
             display: block;
@@ -242,10 +259,11 @@ body {
     }
     #gfp-css-selectors {
         resize: vertical!important;
-        max-height: 200px!important;
+        max-height: 300px!important;
         min-height: 40px!important;
-        height: 100px;
-        font-size: 12px!important;
+        height: 120px;
+        font-size: 13px!important;
+        border-radius: 0 0 $radius $radius;
     }
     #gfp-fonts-search-wrap {
         padding: $spacing;
@@ -359,7 +377,7 @@ body {
     }
 }
 
-@keyframes gfp-slide-right {
+@keyframes gfp-slide-right-in {
     from {
         transform: translateX(-100%);
         opacity: 0;
@@ -367,6 +385,15 @@ body {
     to {
         transform: translateX(0);
         opacity: 1;
+    }
+}
+
+@keyframes gfp-slide-right-out {
+    from {
+        transform: translateX(0); // opacity: 0;
+    }
+    to {
+        transform: translateX(-100%); // opacity: 1;
     }
 }
 

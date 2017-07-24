@@ -10,6 +10,7 @@ var fontAwesomeCDN = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/
 const activeClass = 'gfp-active' // this class will be applied to body , when the extension is injected into page by chrome
 const loadingClass = 'gfp-loading' // use this class for showing loading animation
 var body = jQuery('body') // select the body
+const visibleClass = 'gfp-extension-visible'
 
 function injectHtml (url) { // get and inject html into page
   webRequest(url) // get html
@@ -48,7 +49,7 @@ export function init () { // initialize plugin
       reject(new Error('Extension already loaded'))
       return
     }
-    body.addClass(activeClass).addClass(loadingClass) // add active and loading class to body
+    body.addClass(visibleClass).addClass(activeClass).addClass(loadingClass) // add active and loading class to body
     injectHtml(htmlUrl) // inject html into page
     injectCss(cssUrl) // inject css into page
     loadFontsAndFontIcons() // load font and font-awesome icons using web font loader and inject them into page

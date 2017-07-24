@@ -2,16 +2,21 @@
     <i class="fa fa-angle-left"></i>
 </div>
 <aside id="google-font-preview-extension" class="gfp-on-left">
+    <div id="gfp-loader">
+        <div id="gfp-loader-inner"></div>
+    </div>
     <section id="gfp-section-settings">
         <input type="checkbox" name="" id=""> Use Random Theme
     </section>
+
     <section id="gfp-section-main">
-        <div id="gfp-loader">
-            <div id="gfp-loader-inner"></div>
-        </div>
+
         <div id="gfp-actions" class="gfp-clearfix">
-            <a href="#" id="gfp-action-settings" style="cursor:not-allowed" title="Slide Down Settings">
-                <i class="fa fa-cog"></i>
+            <a href="#" target="_blank" id="gfp-action-settings" title="Slide Down Settings">
+                <i class="fa fa-question-circle"></i>
+            </a>
+            <a href="#" id="gfp-action-reset" title="Reset Fonts For Page">
+                <i class="fa fa-history"></i>
             </a>
             <a href="#" id="gfp-action-apply" title="Apply Changes To Page">
                 <i class="fa fa-flask"></i>
@@ -31,12 +36,19 @@
             <a href="#" id="gfp-action-italic" title="Italic/Normal Click To Toggle">
                 <i class="fa fa-italic"></i>
             </a>
-            <a href="#" id="gfp-action-reset" title="Reset Fonts For Page">
-                <i class="fa fa-history"></i>
-            </a>
+
+        </div>
+
+        <div id="gfp-css-selector-shortcuts" class=" gfp-clearfix">
+            <a href="#" title="*">*</a>
+            <a href="#" title="body">body</a>
+            <a href="#" title="h1,h2,h3,h4,h5,h6">h1-6</a>
+            <a href="#" title="p">p</a>
+            <a href="#" title="ul,ol,dl">lists</a>
+            <a href="#" title="em,strong">strong</a>
         </div>
         <div class="gfp-css-selectors-wrap ">
-            <textarea id="gfp-css-selectors" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="Css selector comma seprated , just like regular css" placeholder="Css selector, * is default || shorthHand command , click help to learn shorthHand"
+            <textarea id="gfp-css-selectors" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" title="Css selector comma seprated , just like regular css" placeholder="write css selector, * is default OR use shorthHand commands , click help to learn more"
                 class="gfp-input"></textarea>
         </div>
     </section>
@@ -49,9 +61,10 @@
             <br> Progress :- <span id="gfp-font-progress"></span>
         </div>
         <div id="gfp-font-families">
-            <div class="gfp-font-family  gfp-clearfix gfp-font-visible" style="top:0" data-index="5">
+            <div class="gfp-font-family  gfp-font-family-applying gfp-clearfix gfp-font-visible" style="top:0" data-index="5">
                 <span class="gfp-font-family-preview" style="text-align: center">...Loading Fonts...</span>
             </div>
         </div>
     </section>
+
 </aside>

@@ -10,6 +10,7 @@ var cssSelectorsEl
 var cssSelectorWrapEl
 var fontWeightEl
 var italicEl
+var body = jQuery('body')
 var fuseOptions = { // font search options
   shouldSort: true, // enable sorted searching
   threshold: 0.6, // fuzziness
@@ -43,6 +44,9 @@ function init () { // initialize
   bindClearStyleClickEvent()
   bindApplyBtnClick()
   bindCtrlEnterOnTextArea()
+  bindOnCssShortcutSelectorsClick()
+  jQuery('#gfp-action-settings').attr('href', chrome.runtime.getURL('html/help.html'))
+  body.addClass('gfp-extension-visible')
 }
 
 export function injectFontPreview (font) { // this will be used to inject preview, after the font is appended in page
@@ -86,7 +90,7 @@ function getHtmlForFont (fontFamily, index) { // generate html for font
 // #REGION search
 function bindSearchEvent () {
   // on search bar type event, call the search function, and debounce it, to limit the execution rate
-  searchBar.keyup(debounce(performSearch, 50))
+  searchBar.keyup(debounce(performSearch, 30))
 }
 
 function showSearchedFonts (fonts) { // show only matched fonts in search, and in correct order
@@ -151,7 +155,7 @@ function bindOnWindowResize () {
 function bindOnFontClick () { // triggered by user click on font
   container.on('click', '>div.gfp-font-family', function (e) { // use on click handler for dynamic event binding
     var fontElement = jQuery(this) // font element
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.metaKey) {
       // var currentVal = cssSelectorsEl.val()
       // cssSelectorsEl.val(currentVal + fontElement.data('font-family'))
       replaceSelTextTextArea(fontElement.data('font-family'))
@@ -208,7 +212,7 @@ function bindApplyBtnClick () {
 
 function bindCtrlEnterOnTextArea () {
   cssSelectorsEl.keydown(function (e) {
-    if (e.ctrlKey && e.keyCode === 13) {
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === 13) {
       applyCssCommand()
     }
   })
@@ -220,6 +224,14 @@ function applyCssCommand () {
   parseAndApplyStyles(css)
     .then(() => cssSelectorWrapEl.removeClass('gfp-css-selectors-loading'))
     .catch(() => console.log('error'))
+}
+
+function bindOnCssShortcutSelectorsClick () {
+  jQuery('#gfp-css-selector-shortcuts a').click(function () {
+    var selector = jQuery(this).attr('title').trim()
+    cssSelectorsEl.val(selector)
+    return false
+  })
 }
 
 function injectEmptyStyleTag () {
@@ -237,8 +249,14 @@ function bindOnItalicClick () { // toggle italic button
 function bindOnHideShowButton () {
   jQuery('#google-font-preview-show-hide-trigger')
     .click(function () {
-      jQuery(this).toggleClass('gfp-extension-hidden')
-      jQuery('#google-font-preview-extension').toggleClass('gfp-extension-hide')
+      if (body.hasClass('gfp-extension-visible')) {
+        body.removeClass('gfp-extension-visible').addClass('gfp-extension-hidden')
+      } else {
+        body.removeClass('gfp-extension-hidden').addClass('gfp-extension-visible')
+      }
+      // body.toggleClass('gfp-extension-visible')
+      // jQuery(this).toggleClass('gfp-extension-hidden')
+      // jQuery('#google-font-preview-extension').toggleClass('gfp-extension-hide')
       return false
     })
 }
