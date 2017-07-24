@@ -18,6 +18,7 @@
   "manifest_version": 2,
   "web_accessible_resources": [
     "html/overlay.html",
+    "html/help.html",
     "css/main.css",
     "js/main.js"
   ]
