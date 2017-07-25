@@ -3,8 +3,8 @@ var isProduction = process.env.NODE_ENV === 'production'
 module.exports = {
   devtool: isProduction ? false : 'source-map',
   entry: {
-    main: './source/babel/main.js',
-    background: './source/babel/background.js'
+    main: './source/es6/main.js',
+    background: './source/es6/background.js'
   },
   output: {
     path: path.join(__dirname, './source/js/'),
