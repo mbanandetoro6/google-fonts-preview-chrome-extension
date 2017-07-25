@@ -2,6 +2,7 @@ import { injectStyles } from './dom.js'
 import { injectFontIntoPage, getFonts } from './fontsApi.js'
 var styles = []
 export function injectFontAndApply (rule) {
+  console.log(rule)
   return new Promise((resolve, reject) => {
     var css = `${rule.selector}{
                   font-family:'${rule.family}'!important;
@@ -10,7 +11,7 @@ export function injectFontAndApply (rule) {
                 }`
     injectFontIntoPage(rule.family, rule.url)
       .then(() => {
-        styles.push({ css: css, rule: rule })
+        styles.push(rule)
         injectStyles(css)
         resolve()
       }).catch(reject)

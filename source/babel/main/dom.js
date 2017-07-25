@@ -200,7 +200,7 @@ function clearInjectedStyles () {
   console.log(activeStyles)
   activeStyles.forEach((style) => {
     console.log(style)
-    jQuery('head').find(`link[href="${style.rule.url}"]`).remove()
+    jQuery('head').find(`link[href="${style.url}"]`).remove()
   })
   resetStyles()
 }
