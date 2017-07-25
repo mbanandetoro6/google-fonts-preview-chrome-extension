@@ -1,4 +1,4 @@
-var Axios = require('axios') // require jquery for using http module
+import * as Axios from 'axios' // require jquery for using http module
 
 export function webRequest (url) { // web request to get data from urls
   return new Promise((resolve, reject) => { // wrap into es6 promise

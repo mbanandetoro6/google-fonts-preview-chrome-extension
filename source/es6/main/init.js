@@ -1,7 +1,6 @@
 import { webRequest } from './../common/util.js' // use this to make http requests, to load html into page
-
-const WebFont = require('webfontloader') // font loader, which provides onload events , so we can use it as trigger
-const jQuery = require('jquery') // using jquery for injecting html and adding active active class on cody
+import * as WebFont from 'webfontloader' // font loader, which provides onload events , so we can use it as trigger
+import * as jQuery from 'jquery' // using jquery for injecting html and adding active active class on cody
 
 var htmlUrl = chrome.runtime.getURL('html/overlay.html') // html file url to be injected in page
 var cssUrl = chrome.runtime.getURL('css/main.css') // css file to be injected in page

@@ -1,5 +1,5 @@
 import * as Dom from './dom.js' // dom manipulations
-const WebFontLoader = require('webfontloader') // load fonts from web and provides a callback events
+import * as WebFontLoader from 'webfontloader' // load fonts from web and provides a callback events
 
 var allFonts = [] // local variable for fonts, will be used by search functionality in dom.js
 

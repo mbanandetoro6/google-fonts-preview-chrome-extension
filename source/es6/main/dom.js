@@ -1,9 +1,9 @@
 import { getFonts } from './fontsApi.js' // used for getting fonts for searching
 import { injectFontAndApply, parseAndApplyStyles, getActiveStyles, resetStyles } from './preview.js' // used for preview font on page
 import { getAdjacentItemFromArray } from './../common/util.js'
-var jQuery = require('jquery') // dom manipulations
-var Fuse = require('fuse.js') // fuzzy search functionality
-const debounce = require('lodash/debounce.js') // debounce search event, to limit the execution rate
+import * as jQuery from 'jquery' // dom manipulations
+import * as Fuse from 'fuse.js' // fuzzy search functionality
+import * as debounce from 'lodash/debounce.js' // debounce search event, to limit the execution rate
 
 var container // jquery object for font container, will be assigned in init function
 var searchBar // jquery object for search bar, will be assigned in init function

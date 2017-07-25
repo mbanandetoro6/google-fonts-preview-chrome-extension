@@ -1,6 +1,6 @@
 import { getFonts as getFontsCache, setFonts as saveFontsCache } from './../common/storage.js' // storage api sto store and retrieve font cache
 import { jsonWebRequest } from './../common/util.js' // common functions to use http calls
-const WebFontLoader = require('webfontloader') // font loader to load fonts and get callback
+import * as WebFontLoader from 'webfontloader' // font loader to load fonts and get callback
 
 var fontSorting = 'alpha'
 const fontUrlBase = 'https://fonts.googleapis.com/css?family=' // url used to build font url for google font family
