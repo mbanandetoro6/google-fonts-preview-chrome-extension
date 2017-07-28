@@ -1,4 +1,4 @@
-import { injectStyles } from './dom.js'
+import { injectCSS } from './dom_styles_manage.js'
 import { injectFontIntoPage, getFonts } from './fontsApi.js'
 var styles = []
 export function injectFontAndApply (rule) {
@@ -12,7 +12,7 @@ export function injectFontAndApply (rule) {
     injectFontIntoPage(rule.family, rule.url)
       .then(() => {
         styles.push(rule)
-        injectStyles(css)
+        injectCSS(css)
         resolve()
       }).catch(reject)
   })
@@ -25,7 +25,7 @@ export function resetStyles () {
 }
 
 export function parseAndApplyStyles (command) {
-  var rules = parseShorthand(command)
+  var rules = parseCSSCommand(command)
   var promise = Promise.resolve()
   rules.forEach(rule => {
     var fonts = getFonts()
@@ -52,7 +52,7 @@ export function parseAndApplyStyles (command) {
   return promise
 }
 
-function parseShorthand (command) {
+function parseCSSCommand (command) {
   var rules = command
     .replace(/\n/g, '')
     .split(';')
