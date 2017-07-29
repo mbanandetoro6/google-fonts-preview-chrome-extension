@@ -1,15 +1,87 @@
 @import '../../node_modules/bulma/bulma.sass';
 @import '_variables.scss';
-.code {
-    font-family: 'Space Mono', monospace;
-    background: darken(white, 10);
-    .css {
-        display: block;
-        padding-left: $spacing;
-    }
+html {
+    height: 100%;
 }
 
 body {
+    min-height: 100%;
+}
+
+.code {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    overflow: auto;
+    .line {
+        display: block;
+        padding-left: $spacing;
+    }
+    .selector {
+        font-weight: bold;
+    }
+    .name {
+        color: brown;
+    }
+    .string {
+        color: darkgreen;
+    }
+    .value {
+        color: darkblue
+    }
+    &.html {
+        .value {
+            color: brown;
+            font-weight: 700;
+        }
+    }
+    .select-styles & {
+        position: relative;
+        padding: $spacing/2;
+        user-select: none;
+        cursor: pointer;
+        .fa {
+            position: absolute;
+            bottom: $spacing;
+            right: $spacing;
+            color: white;
+            opacity: 0;
+            visibility: hidden;
+            transition-duration: $duration;
+            font-style: 20px;
+            color: $success-color;
+            transform: scale(0) rotate(-180deg);
+        }
+        &.selected {
+            .fa {
+                visibility: visible;
+                opacity: 1;
+                transform: scale(1) rotate(0);
+                ;
+            }
+        }
+    }
+    .selected-styles & {
+        padding: 0;
+        background: none;
+        margin-bottom: 10px;
+    }
+}
+
+.select-styles {
+    background: white;
+    border-radius: $radius;
+}
+
+.selected-styles .card {
+    box-shadow: none;
+}
+
+.guide {
+    background: darken(white, 10);
+    padding: $spacing;
+}
+
+body.sss {
     font-family: 'Roboto', sans-serif;
     font-weight: 400;
     font-style: italic;
