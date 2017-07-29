@@ -1,0 +1,16 @@
+@import '../../node_modules/bulma/bulma.sass';
+@import '_variables.scss';
+.code {
+    font-family: 'Space Mono', monospace;
+    background: darken(white, 10);
+    .css {
+        display: block;
+        padding-left: $spacing;
+    }
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}

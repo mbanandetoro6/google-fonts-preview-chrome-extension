@@ -24,6 +24,7 @@ function init () { // initialize
   setFontContainerHeight() // set container height
   bindOnWindowResize() // event handler to adjust the container height on resize
   injectEmptyStyleTag()
+  setExportHtmlUrl()
   bindEvents()
 }
 
@@ -94,6 +95,10 @@ function bindOnWindowResize () {
 
 function injectEmptyStyleTag () {
   jQuery('#gfp-extension-stylesheet').before('<style id="gfp-font-styles"></style>')
+}
+
+function setExportHtmlUrl () {
+  jQuery('#gfp-action-export').attr('href', chrome.runtime.getURL('html/export.html'))
 }
 
 // #REGION cache-progress
