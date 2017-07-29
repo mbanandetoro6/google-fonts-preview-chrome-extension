@@ -4,7 +4,8 @@ module.exports = {
   devtool: isProduction ? false : 'source-map',
   entry: {
     main: './source/es6/main.js',
-    background: './source/es6/background.js'
+    background: './source/es6/background.js',
+    export: './source/es6/export.js'
   },
   output: {
     path: path.join(__dirname, './source/js/'),

@@ -19,7 +19,9 @@
   "web_accessible_resources": [
     "html/overlay.html",
     "html/help.html",
+    "html/export.html",
     "css/main.css",
+    "css/export.css",
     "js/main.js"
   ]
 }
