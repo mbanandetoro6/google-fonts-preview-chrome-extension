@@ -1,4 +1,5 @@
 import * as jQuery from 'jquery'
+import * as copy from 'jquery.text-select'
 var rules = []
 rules.push({
   font: 'Roboto',
@@ -59,46 +60,54 @@ rules.push({
 
 function init () {
   injectCode()
-  jQuery('.select-styles').on('click', '.code', function () {
-    toggleBetweenClass(jQuery(this), 'selected', 'unselected')
+  jQuery('.input-section').on('click', '.code', function () {
+    jQuery(this).toggleClass('selected')
   })
+  bindEvents()
 }
 
-function toggleBetweenClass (jqueryElement, class1, class2) {
-  if (jqueryElement.hasClass(class1)) {
-    jqueryElement.removeClass(class1).addClass(class2)
-  } else {
-    jqueryElement.removeClass(class2).addClass(class1)
-  }
-  return jqueryElement
+function bindEvents () {
+  jQuery('#select-html-text').click(() => jQuery('.html-output').selectText())
+  jQuery('#select-css-text').click(() => jQuery('.css-output').selectText())
+  jQuery('#copy-css-text').click(() => {
+    jQuery('.css-output').selectText()
+    document.execCommand('copy')
+    jQuery('.css-output').selectText(false)
+    jQuery('#css-copy-done').removeClass('is-hidden')
+    setTimeout(() => jQuery('#css-copy-done').addClass('is-hidden'), 1500)
+  })
+  jQuery('#copy-html-text').click(() => {
+    jQuery('.html-output').selectText()
+    document.execCommand('copy')
+    jQuery('.html-output').selectText(false)
+    jQuery('#html-copy-done').removeClass('is-hidden')
+    setTimeout(() => jQuery('#html-copy-done').addClass('is-hidden'), 1500)
+  })
+  jQuery('.toggle-help').click(function () {
+    jQuery(this).next('.extra-help').toggle()
+  })
 }
 
 function injectCode () {
   rules.forEach(function (rule) {
-    jQuery('.select-styles').append(code(rule, true))
-    jQuery('.selected-styles').append(code(rule))
+    jQuery('.input-section').append(code(rule, true))
+    jQuery('.css-output').append(code(rule))
   }, this)
+  // jQuery('.css-output').selectText()
 }
 
 var code = (data, selectable) => `
-        <div class="code card css selected">
+        <div class="code css ${selectable ? ' selected ' : ' '}">
             <span class="selector">${data.selector}</span>
             <span class="start">{</span>
             <span class="line">
-                <span class="name">font-family :</span>
-            <span class="property-value"><span class="string">'${data.font}'</span> ,${data.category};</span>
+              <span class="name">font-family :</span>
+              <span class="property-value"><span class="string">'${data.font}'</span> ,${data.category};</span>
             </span>
-            ${data.weight !== 400 ? `<span class="line">
-                        <span class="name">font-weight:</span>
-            <span class="value">${data.weight};</span></span>` : ''}
-            ${data.style === 'italic' ? `<span class="line">
-                        <span class="name">font-style:</span>
-            <span class="value">${data.style};</span></span>` : ''}
-            
-            
+            ${data.weight !== 400 ? `<span class="line"><span class="name">font-weight:</span><span class="value">${data.weight};</span></span>` : ''}
+            ${data.style === 'italic' ? `<span class="line"><span class="name">font-style:</span><span class="value">${data.style};</span></span>` : ''}
             <span class="end">}</span>
             ${selectable ? ' <span class="fa fa-check-circle"></span>' : ''}
-           
         </div>
 `
 

@@ -40,6 +40,7 @@
     "gulp-plumber": "^1.1.0",
     "gulp-sass": "^3.1.0",
     "jquery": "^3.2.1",
+    "jquery.text-select": "^1.0.4",
     "lodash": "^4.17.4",
     "webfontloader": "^1.6.28",
     "webpack": "^3.3.0"

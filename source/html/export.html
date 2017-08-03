@@ -6,55 +6,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700|Space+Mono:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Space+Mono:400,700" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="../css/export.css">
 </head>
 
 <body>
 
-    <div class="columns is-gapless">
-        <div class="column is-4 select-styles">
+    <div class="columns is-gapless is-mobile">
 
+        <div class="column output-section">
+
+            <div class="note is-clearfix">
+                <strong>Html Output</strong>
+                <a href="#" class="hidden-print toggle-help button is-small is-light">
+                    <span class="icon is-small">
+                        <i class="fa fa-question"></i>
+                    </span>
+                </a>
+                <span class=" visible-print extra-help">
+                    : Paste below link tag in &lt;HEAD&gt; tag, ex &lt;head&gt; "below-line" &lt;/head&gt;
+                </span>
+                <strong id="html-copy-done" class="copy-done is-hidden is-pulled-right has-text-info">Copy Done</strong>
+
+            </div>
+            <div class="html-output-container">
+                <div class="actions hidden-print  field has-addons ">
+                    <p class="control">
+                        <a id="select-html-text" href="#" class="button is-link is-small">select</a>
+                    </p>
+                    <p class="control">
+                        <a id="copy-html-text" href="#" class=" button is-link is-small">copy</a>
+                    </p>
+                </div>
+                <div class="html-output code html">
+                    &lt;<span class="html-tag">link </span><span class="attr">href</span><span class="eqals">=</span><span class="quote">"</span><span class="value">https://fonts.googleapis.com/css?family=Roboto:400,500,700|Space+Mono</span><span class="quote">"</span>&nbsp;
+                    <span class="attr">rel</span><span class="equals">=</span><span class="quote">"</span><span class="value">stylesheet</span><span class="quote">"</span>&gt;
+                </div>
+            </div>
+            <div class="note is-clearfix">
+                <strong>Css Output</strong>
+                <a href="#" class="hidden-print  toggle-help button is-small is-light">
+                    <span class="icon is-small">
+                        <i class="fa fa-question"></i>
+                    </span>
+                </a>
+                <span class="visible-print extra-help ">: Paste below css in your stylesheet</span>
+                <strong id="css-copy-done" class="copy-done  is-hidden is-pulled-right has-text-info ">Copy Done</strong>
+
+            </div>
+            <div class="css-output-container">
+                <div class="hidden-print  actions field has-addons ">
+                    <p class="control">
+                        <a id="select-css-text" href="#" class="button  is-link is-small">select</a>
+                    </p>
+                    <p class="control">
+                        <a id="copy-css-text" href="#" class=" button is-link is-small">copy</a>
+                    </p>
+                </div>
+                <div class="css-output">
+
+                </div>
+
+            </div>
         </div>
-        <div class="column">
-            <div class="card">
-                <header class="card-header">
-                    <p class="card-header-title">
-                        Copy & Paste this inside HTML &lt;head&gt; TAG
-                    </p>
-
-                </header>
-                <div class="card-content">
-                    <div class="content">
-                        <div class="code html">
-                            &lt;<span class="html-tag">link</span>
-                            <span class="attr">href</span><span class="eqals">=</span><span class="quote">"</span><span class="value">https://fonts.googleapis.com/css?family=Roboto:400,500,700|Space+Mono</span><span class="quote">"</span>&nbsp;<span class="attr">rel</span>
-                            <span class="eqals">=</span><span class="quote">"</span><span class="value">stylesheet</span><span class="quote">"</span>&gt;
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="card">
-                <header class="card-header">
-                    <p class="card-header-title">
-                        Copy & Paste this inside CSS
-                    </p>
-
-                </header>
-                <div class="card-content">
-                    <div class="content">
-                        <div class="selected-styles"></div>
-                    </div>
-                </div>
-
-            </div>
+        <div class="column input-section hidden-print  is-half-tablet is-one-third-desktop">
 
         </div>
     </div>
+
+    <div class="help hidden-print ">
+        <section class="hero is-dark hidden-print ">
+            <div class="hero-body">
+                <h1 class="title">
+                    Performance Notes
+                </h1>
+                <h2 class="subtitle">
+                    Optimization Guide for using export
+                </h2>
+            </div>
+        </section>
+        <div class="content">
+            <ul>
+                <li>
+                    The <strong>more fonts</strong> and styles/variants/weights you use, the <strong>slower</strong> the page load
+                </li>
+                <li>
+                    <span class="tag is-dark">5</span> fonts with <span class="tag is-dark">15</span> different styles currently in use
+                </li>
+                <li>
+                    refine selection on right side
+                </li>
+            </ul>
+        </div>
+    </div>
+
 
 
     <script src="../js/export.js"></script>

@@ -1,16 +1,63 @@
-@import '../../node_modules/bulma/bulma.sass';
 @import '_variables.scss';
-html {
-    height: 100%;
+$primary:$primary-color!default;
+@import '../../node_modules/bulma/bulma.sass';
+.custom-scrollbar {
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+    &::-webkit-scrollbar-track {
+        background: $seprator-color;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: darken($seprator-color, 25);
+    }
+}
+
+.input-section {
+    border-left: 1px solid $seprator-color;
+}
+
+.input-section,
+.output-section {
+    .note {
+        padding: 5px $spacing;
+        border-radius: 0;
+        margin: 0;
+        border-bottom: 1px solid darken($seprator-color, 5);
+        border-top: 1px solid darken($seprator-color, 5); // background-color: $seprator-color
+    }
+}
+
+.tag.is-info {
+    font-size: 14px;
 }
 
 body {
-    min-height: 100%;
+    // font-size: 14px;
+    -webkit-font-variant-ligatures: none;
+    font-variant-ligatures: none; // font-family: 'Space Mono', monospace;
+}
+
+a {
+    color: #3273dc;
+}
+
+.mono {
+    font-family: 'Space Mono', monospace;
+}
+
+.extra-help {
+    display: none
+}
+
+.is-circle {
+    border-radius: 50%;
 }
 
 .code {
     font-family: 'Space Mono', monospace;
     font-size: 14px;
+    width: 100%;
     overflow: auto;
     .line {
         display: block;
@@ -24,65 +71,99 @@ body {
     }
     .string {
         color: darkgreen;
+        font-weight: bold;
     }
     .value {
         color: darkblue
     }
-    &.html {
-        .value {
-            color: brown;
-            font-weight: 700;
-        }
-    }
-    .select-styles & {
+    .input-section & {
+        padding: $spacing;
+        border-bottom: 1px solid $seprator-color;
         position: relative;
-        padding: $spacing/2;
         user-select: none;
-        cursor: pointer;
+        &:hover {
+            background: $seprator-color;
+        }
+        &:last-child {
+            border-bottom: none;
+        }
         .fa {
-            position: absolute;
-            bottom: $spacing;
-            right: $spacing;
-            color: white;
-            opacity: 0;
             visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            color: $success-color; // transition: transform $duration $easeInOutBack;
             transition-duration: $duration;
-            font-style: 20px;
-            color: $success-color;
-            transform: scale(0) rotate(-180deg);
+            transition-timing-function: $easeInOutBack;
+            transform: scale(.5) rotate(-180deg);
+            font-size: 16px;
         }
         &.selected {
             .fa {
                 visibility: visible;
                 opacity: 1;
                 transform: scale(1) rotate(0);
-                ;
             }
         }
     }
-    .selected-styles & {
-        padding: 0;
-        background: none;
-        margin-bottom: 10px;
+    &.html {
+        .attr {
+            color: brown;
+        }
+        .value {
+            font-weight: bold;
+        }
     }
 }
 
-.select-styles {
-    background: white;
-    border-radius: $radius;
+.css-output-container,
+.html-output-container {
+    padding: $spacing*2 $spacing;
+    position: relative;
+    >.actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
 }
 
-.selected-styles .card {
-    box-shadow: none;
+.help {
+    .content {
+        font-size: 1rem;
+        padding: $spacing*2 $spacing;
+    }
+    h3 {
+        color: $info;
+    }
+    animation: fade-in $duration*3
 }
 
-.guide {
-    background: darken(white, 10);
-    padding: $spacing;
+.columns {
+    margin-bottom: 0!important;
 }
 
-body.sss {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-style: italic;
+@media print {
+    .hidden-print {
+        display: none!important;
+    }
+    .visible-print {
+        display: block!important;
+    }
+    span.visible-print {
+        display: inline!important;
+    }
 }
+
+@keyframes fade-in {
+    from {
+        opacity: 0
+    }
+    to {
+        opacity: 1
+    }
+}
+
+// .hero.is-primary{
+//     background-color: $primary-color;
+// }
